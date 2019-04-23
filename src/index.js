@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import logo from './img/jdot white.png';
@@ -8,6 +8,9 @@ import "./styles.css";
 /**
  * Main function which shows navigation
  */
+
+
+
 function Main() {
   return (
     <Router>
@@ -20,17 +23,81 @@ function Main() {
             <Link to="/register">Register</Link>
           </li>
           <li>
-            <Link to="/search">Search</Link>
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/search">Explore</Link>
           </li>
         </ul>
       </nav>
 
       <Route exact path="/" component={Home} />
       <Route path="/register" component={Register} />
+      <Route path="/login" component={Login} />
       <Route path="/search" component={Search} />
     </Router>
   );
 }
+
+
+const API_KEY = 'aed0ca0db73f46f4a94fae5d6dd7ec4d';
+
+function getHeadlines() {
+  const url = 'http://cab230.hackhouse.sh:3000/offences' ;
+  return fetch(url)
+  .then((res) => res.json())
+  .then((res) => res.offences) // get just the list of articles
+  }
+    
+function Headline(props) {
+  return <div>{props.key}</div>;
+}
+
+function data(){
+  const [loading, setLoading] = useState(true);
+  const [headlines, setHeadlines] = useState([]);
+  const [error, setError] = useState(null);
+
+  getHeadlines(() => {
+    dataButton()
+    .then((headlines) => {
+    setHeadlines(headlines);
+    setLoading(false);
+    })
+    .catch((e) => {
+    setError(e);
+    setLoading(false);
+    });
+    }, []);
+    return {
+    loading,
+    headlines,
+    error,
+    };
+}
+
+
+
+function App() {
+  const { loading, headlines, error } = data();
+  if (loading) {
+  return <p>Loading...</p>;
+  }
+  if (error) {
+  return <p>Something went wrong: {error.message}</p>;
+  }
+  return (
+  <div className="App">
+  {headlines.map((headline) => (
+  // `headline` is now an object
+  <Headline key={headline} />
+  ))}
+  </div>
+  )
+}
+  
+
+
 
 // global variables
 let JWT = null;
@@ -142,7 +209,7 @@ function dataButton(category) {
       })
       .then(function() {
         ReactDOM.render(
-          <Table />, 
+          <App />, 
           document.getElementById("table")
         );
       })
@@ -207,12 +274,29 @@ function Register() {
 
 		<div className="bluebg letter">
 			<div className="pillar">
-				<h1>Register / Login</h1>
+				<h1>Register</h1>
 				Email:<br></br>
 				<input type="text" name="email" id="email"></input><br></br>
 				Password:<br></br>
 				<input className="form" type="password" name="password" id="pass"></input><br></br>
 				<button onClick={regButton} >Register</button>
+			</div>
+      <div id="app"></div>
+    </div>
+
+  );
+}
+
+function Login() {
+  return (
+
+		<div className="bluebg letter">
+			<div className="pillar">
+				<h1>Login</h1>
+				Email:<br></br>
+				<input type="text" name="email" id="email"></input><br></br>
+				Password:<br></br>
+				<input className="form" type="password" name="password" id="pass"></input><br></br>
 				<button onClick={logButton} >Login</button>
 			</div>
       <div id="app"></div>
