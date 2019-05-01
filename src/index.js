@@ -39,6 +39,12 @@ function Main() {
   );
 }
 
+export function getHeadlines() {
+  const url = `https://cab230.hackhouse.sh/offences`;
+  return fetch(url)
+    .then(res => res.json())
+    .then(res => res.offences); 
+}
 
 export function useNewsArticles() {
   const [loading, setLoading] = useState(true);
@@ -50,7 +56,6 @@ export function useNewsArticles() {
       .then(headlines => {
         setHeadlines(headlines);
         setLoading(false);
-        console.log(headlines);
       })
 
       .catch(e => {
@@ -66,14 +71,8 @@ export function useNewsArticles() {
   };
 }
 
-export function getHeadlines() {
-  const url = `https://cab230.hackhouse.sh/offences`;
-  return fetch(url)
-    .then(res => res.json())
-    .then(res => res.offences); // get just the list of articles
-}
 
-function App() {
+function Tableapp() {
   const { loading, headlines, error } = useNewsArticles();
 
   if (loading === true) {
@@ -84,7 +83,7 @@ function App() {
     return <p>Loading...</p>;
   }
   return (
-    <table className="App">
+    <table className="tableapp">
       <h1>Offences</h1>
 
       {headlines.map(headline => (
@@ -105,10 +104,10 @@ function Headline(prop) {
   );
 }
 
-
-const rootElement = document.getElementById("table");
-ReactDOM.render(<App />, rootElement);
-
+function tableapp(){
+  const rootElement = document.getElementById("app");
+  ReactDOM.render(<Tableapp />, rootElement);
+}
 
 
 // global variables
@@ -124,6 +123,30 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
+console.log(getHeadlines())
+
+/**
+ * Get categories with REST 
+ * @param {*} category 
+ */
+function getData() {
+
+  fetch("https://cab230.hackhouse.sh/offences")
+      .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Network response was not ok.");
+      })
+      .then(function(result) {
+          return(result.offences)
+          let appDiv = document.getElementById("app");
+          appDiv.innerHTML = JSON.stringify(result);
+      })
+      .catch(function(error) {
+          console.log("There has been a problem with your fetch operation: ",error.message);
+      });
+}
 
 /**
  * REST POST for registration form
@@ -132,13 +155,13 @@ function regButton(){
 
   let emailForm = document.getElementById("email").value;
   let passForm = document.getElementById("pass").value;
-  let body = "email=" + emailForm + "&password=" + passForm
+  let body = "email=" + emailForm + "&password=" + passForm;
 
   if (validation(emailForm, passForm)){
     return;
   }
 
-  fetch("http://cab230.hackhouse.sh:3000/register", {
+  fetch("https://cab230.hackhouse.sh/register", {
     method: "POST",
     body: body,
     headers: {
@@ -176,7 +199,7 @@ function logButton() {
     return;
   }
   
-  fetch("http://cab230.hackhouse.sh:3000/login", {
+  fetch("https://cab230.hackhouse.sh/login", {
       method: "POST",
       body: body,
       headers: {
@@ -203,27 +226,7 @@ function logButton() {
 }
 
 
-/**
- * Get categories with REST 
- * @param {*} category 
- */
-function dataButton(category) {
 
-  fetch("http://cab230.hackhouse.sh:3000/" + category)
-      .then(function(response) {
-          if (response.ok) {
-              return response.json();
-          }
-          throw new Error("Network response was not ok.");
-      })
-      .then(function(result) {
-          let appDiv = document.getElementById("app");
-          appDiv.innerHTML = JSON.stringify(result);
-      })
-      .catch(function(error) {
-          console.log("There has been a problem with your fetch operation: ",error.message);
-      });
-}
 
 /**
  * REST GET for search query
@@ -238,7 +241,7 @@ function searchButton() {
   valSearch(JWT);
 
   //The URL
-  const baseUrl = "http://cab230.hackhouse.sh:3000/search?";
+  const baseUrl = "https://cab230.hackhouse.sh/search?";
   const query = 'offence=' + searchForm;
   const url = baseUrl + query;
 
@@ -324,11 +327,7 @@ function Search() {
 		<div className="letter">
 			<div className="pillar">
         <h2>Categories</h2>
-        <button onClick={() => {dataButton("offences")}}>Offences</button>
-        <button onClick={() => {dataButton("areas")}}>Areas</button>
-        <button onClick={() => {dataButton("ages")}}>Ages</button>
-        <button onClick={() => {dataButton("genders")}}>Genders</button>
-        <button onClick={() => {dataButton("years")}}>Years</button>
+        <button onClick={tableapp}>Offences</button>
 				<input type="text" name="search" defaultValue="Homicide (Murder)" id="searchBox"></input>
 				<button onClick={searchButton}>Search</button>
 			</div>
@@ -339,7 +338,7 @@ function Search() {
   );
 }
 
-
+//<button onClick={() => {dataButton("offences")}}>Offences</button>
 
 /**
  * Test for validation before sending REST query
