@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import logo from './img/jdot white.png';
+import logo from './img/jdotw.png';
 import { Chart } from "react-google-charts";
 
 import "./styles.css";
@@ -40,62 +40,74 @@ function Main() {
 }
 
 
-const API_KEY = 'aed0ca0db73f46f4a94fae5d6dd7ec4d';
-
-function getHeadlines() {
-  const url = 'http://cab230.hackhouse.sh:3000/offences' ;
-  return fetch(url)
-  .then((res) => res.json())
-  .then((res) => res.offences) // get just the list of articles
-  }
-    
-function Headline(props) {
-  return <div>{props.key}</div>;
-}
-
-function data(){
+export function useNewsArticles() {
   const [loading, setLoading] = useState(true);
   const [headlines, setHeadlines] = useState([]);
   const [error, setError] = useState(null);
 
-  getHeadlines(() => {
-    dataButton()
-    .then((headlines) => {
-    setHeadlines(headlines);
-    setLoading(false);
-    })
-    .catch((e) => {
-    setError(e);
-    setLoading(false);
-    });
-    }, []);
-    return {
+  useEffect(() => {
+    getHeadlines()
+      .then(headlines => {
+        setHeadlines(headlines);
+        setLoading(false);
+        console.log(headlines);
+      })
+
+      .catch(e => {
+        setError(e);
+        setLoading(false);
+      });
+  }, []);
+
+  return {
     loading,
     headlines,
-    error,
-    };
+    error
+  };
 }
 
-
+export function getHeadlines() {
+  const url = `https://cab230.hackhouse.sh/offences`;
+  return fetch(url)
+    .then(res => res.json())
+    .then(res => res.offences); // get just the list of articles
+}
 
 function App() {
-  const { loading, headlines, error } = data();
-  if (loading) {
-  return <p>Loading...</p>;
+  const { loading, headlines, error } = useNewsArticles();
+
+  if (loading === true) {
+    return <p>Loading...</p>;
   }
+
   if (error) {
-  return <p>Something went wrong: {error.message}</p>;
+    return <p>Loading...</p>;
   }
   return (
-  <div className="App">
-  {headlines.map((headline) => (
-  // `headline` is now an object
-  <Headline key={headline} />
-  ))}
-  </div>
-  )
+    <table className="App">
+      <h1>Offences</h1>
+
+      {headlines.map(headline => (
+        <Headline offence={headline} />
+      ))}
+    </table>
+  );
 }
-  
+
+function Headline(prop) {
+  return (
+      <tr>
+        <td>
+          {prop.offence}
+        </td>
+      </tr>
+      
+  );
+}
+
+
+const rootElement = document.getElementById("table");
+ReactDOM.render(<App />, rootElement);
 
 
 
@@ -111,6 +123,7 @@ ReactDOM.render(
   <Main />, 
   document.getElementById("root")
 );
+
 
 /**
  * REST POST for registration form
@@ -207,12 +220,6 @@ function dataButton(category) {
           let appDiv = document.getElementById("app");
           appDiv.innerHTML = JSON.stringify(result);
       })
-      .then(function() {
-        ReactDOM.render(
-          <App />, 
-          document.getElementById("table")
-        );
-      })
       .catch(function(error) {
           console.log("There has been a problem with your fetch operation: ",error.message);
       });
@@ -259,7 +266,7 @@ function searchButton() {
 function Home() {
   return (
       <div className="blurbg banner">
-			  <div className="pillar">  
+			  <div className="box">  
 				  <h1 className="white">Welcome</h1>
 			  </div>
       </div>
@@ -358,17 +365,4 @@ function valSearch(param){
     return true;
   }
 
-}
-
-
-function Table(){
-  return(
-  <Chart
-    width={'500px'}
-    height={'300px'}
-    chartType="Table"
-    loader={<div>Loading Chart</div>}
-    data={jData}
-  />
-  )
 }
