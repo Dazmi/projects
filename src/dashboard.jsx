@@ -8,37 +8,44 @@ render(){
 return (
   <div>
     <Nav />
-  <div className="banner">
-  <div className="box">
-    <h2>Categories</h2>
-    <button onClick={Showtable}>Offences</button>
-    <input type="text" name="search" defaultValue="Homicide (Murder)" id="searchBox"></input>
-    <button onClick={searchButton}>Search</button>
-  </div>
-  <div id="app"></div>
-  </div>
-</div>
+    <div className="space"></div>
+      <div className="box">
+        <div className="pod">
+          <h2>Categories</h2>
+          <button onClick={Offencetable}>Offences</button>
+          <button onClick={Searchtable}>Searchv2</button>
+          <input type="text" name="search" defaultValue="Homicide (Murder)" id="searchBox"></input>
+          <button onClick={searchButton}>Search</button>
+        </div>
+      </div>
+      <div id="app"></div>
+    </div>
 );
 }}
 
-function Showtable(){
-  ReactDOM.render(<Tableapp />, document.getElementById("app"));
+function Offencetable(){
+  ReactDOM.render(<Offenceapp />, document.getElementById("app"));
 }
 
-export function getHeadlines() {
+function Searchtable(){
+  ReactDOM.render(<Searchapp />, document.getElementById("app"));
+}
+
+
+export function getOffences() {
   const url = `https://cab230.hackhouse.sh/offences`;
   return fetch(url)
     .then(res => res.json())
     .then(res => res.offences); 
 }
 
-export function useNewsArticles() {
+export function useOffences() {
   const [loading, setLoading] = useState(true);
   const [headlines, setHeadlines] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getHeadlines()
+    getOffences()
       .then(headlines => {
         setHeadlines(headlines);
         setLoading(false);
@@ -57,9 +64,8 @@ export function useNewsArticles() {
   };
 }
 
-
-function Tableapp() {
-  const { loading, headlines, error } = useNewsArticles();
+function Offenceapp() {
+  const { loading, headlines, error } = useOffences();
 
   if (loading === true) {
     return <p>Loading...</p>;
@@ -80,6 +86,83 @@ function Tableapp() {
 }
 
 function Headline(prop) {
+  return (
+      <tr>
+        <td>
+          {prop.offence}
+        </td>
+      </tr>
+      
+  );
+}
+
+export function getSearch() {
+  let searchForm = document.getElementById("searchBox").value;
+  //The parameters of the call
+  let getParam = { method: "GET" };
+  let head = { Authorization: `Bearer ${getCookie("JWT")}` };
+  getParam.headers = head;
+
+  valSearch(getCookie("JWT"));
+
+  //The URL
+  const baseUrl = "https://cab230.hackhouse.sh/search?";
+  const query = 'offence=' + searchForm;
+  const url = baseUrl + query;
+
+  return fetch(encodeURI(url),getParam)
+    .then(res => res.json())
+    .then(res => res.query); 
+}
+
+export function useSearch() {
+  const [loading, setLoading] = useState(true);
+  const [headlines, setHeadlines] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getSearch()
+      .then(headlines => {
+        console.log(headlines);
+        setHeadlines(headlines);
+        setLoading(false);
+      })
+
+      .catch(e => {
+        setError(e);
+        setLoading(false);
+      });
+  }, []);
+
+  return {
+    loading,
+    headlines,
+    error
+  };
+}
+
+function Searchapp() {
+  const { loading, headlines, error } = useSearch();
+
+  if (loading === true) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Loading...</p>;
+  }
+  return (
+    <table className="tableapp">
+      <h1>Offences</h1>
+
+      {headlines.map(headline => (
+        <Search offence={headline} />
+      ))}
+    </table>
+  );
+}
+
+function Search(prop) {
   return (
       <tr>
         <td>
@@ -117,6 +200,7 @@ function searchButton() {
           let appDiv = document.getElementById("app");
           appDiv.innerHTML = JSON.stringify(result);
       })
+
       .catch(function(error) {
             console.log(url)
             console.log("There has been a problem with your fetch operation: ",error.message);
@@ -125,7 +209,7 @@ function searchButton() {
 }
 
 
-function getData() {
+function GetData() {
 
   fetch("https://cab230.hackhouse.sh/offences")
       .then(function(response) {
@@ -135,7 +219,6 @@ function getData() {
           throw new Error("Network response was not ok.");
       })
       .then(function(result) {
-          return(result.offences)
           let appDiv = document.getElementById("app");
           appDiv.innerHTML = JSON.stringify(result);
       })

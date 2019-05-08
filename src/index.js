@@ -25,7 +25,7 @@ function Main() {
     </Router>
   );
 }
-ReactDOM.render(<Main />, document.getElementById("root"));
+ReactDOM.render(<Main />, document.body);
 
 
 
