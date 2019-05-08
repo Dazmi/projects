@@ -2,22 +2,27 @@ import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Nav from "./nav.jsx"
-import Offences from "./offences.jsx"
+import { Offences, RenderTable }from "./offences.jsx"
 import Search from "./search.jsx"
-import Offdrop from "./offdrop.jsx"
+import Dropdown from "./offdrop.jsx"
 import Chart from 'chart.js';
 
 export default class Home extends React.Component {
 render(){
-  //offdrop()
 return (
   <div>
     <Nav />
     <div className="banner"></div>
     <div className="box">
       <h2>Categories</h2>
-      <Offdrop />
-      <button onClick={OffencesTable}>Offences</button>
+      <Dropdown />
+
+
+      <button onClick={() => RenderTable("offences")}>Offences</button>
+      <button onClick={() => RenderTable("areas")}>Areas</button>
+      <button onClick={() => RenderTable("ages")}>Ages</button>
+      <button onClick={() => RenderTable("genders")}>Genders</button>
+      <button onClick={() => RenderTable("years")}>Years</button>
       <button onClick={chart}>Chart</button>
       <button onClick={SearchTable}>Search</button>
 
@@ -29,11 +34,6 @@ return (
 );
 }}
 
-
-//<button onClick={Search}>Search</button>
-function OffencesTable(){
-  ReactDOM.render(<Offences />, document.getElementById("app"));
-}
 
 function SearchTable(){
   ReactDOM.render(<Search />, document.getElementById("app"));
