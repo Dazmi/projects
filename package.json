@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "chart.js": "^2.8.0",
     "react": "16.8.3",
     "react-cookie": "^3.1.2",
     "react-dom": "16.8.3",

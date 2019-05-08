@@ -2,253 +2,79 @@ import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Nav from "./nav.jsx"
+import Offences from "./offences.jsx"
+import Search from "./search.jsx"
+import Offdrop from "./offdrop.jsx"
+import Chart from 'chart.js';
 
 export default class Home extends React.Component {
 render(){
+  //offdrop()
 return (
   <div>
     <Nav />
-    <div className="space"></div>
-      <div className="box">
-        <div className="pod">
-          <h2>Categories</h2>
-          <button onClick={Offencetable}>Offences</button>
-          <button onClick={Searchtable}>Searchv2</button>
-          <input type="text" name="search" defaultValue="Homicide (Murder)" id="searchBox"></input>
-          <button onClick={searchButton}>Search</button>
-        </div>
-      </div>
-      <div id="app"></div>
+    <div className="banner"></div>
+    <div className="box">
+      <h2>Categories</h2>
+      <Offdrop />
+      <button onClick={OffencesTable}>Offences</button>
+      <button onClick={chart}>Chart</button>
+      <button onClick={SearchTable}>Search</button>
+
+    </div>
+    <canvas id="myChart"></canvas>
+    <div id="app"></div>
+    
     </div>
 );
 }}
 
-function Offencetable(){
-  ReactDOM.render(<Offenceapp />, document.getElementById("app"));
+
+//<button onClick={Search}>Search</button>
+function OffencesTable(){
+  ReactDOM.render(<Offences />, document.getElementById("app"));
 }
 
-function Searchtable(){
-  ReactDOM.render(<Searchapp />, document.getElementById("app"));
+function SearchTable(){
+  ReactDOM.render(<Search />, document.getElementById("app"));
 }
 
-
-export function getOffences() {
-  const url = `https://cab230.hackhouse.sh/offences`;
-  return fetch(url)
-    .then(res => res.json())
-    .then(res => res.offences); 
-}
-
-export function useOffences() {
-  const [loading, setLoading] = useState(true);
-  const [headlines, setHeadlines] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    getOffences()
-      .then(headlines => {
-        setHeadlines(headlines);
-        setLoading(false);
-      })
-
-      .catch(e => {
-        setError(e);
-        setLoading(false);
-      });
-  }, []);
-
-  return {
-    loading,
-    headlines,
-    error
-  };
-}
-
-function Offenceapp() {
-  const { loading, headlines, error } = useOffences();
-
-  if (loading === true) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Loading...</p>;
-  }
-  return (
-    <table className="tableapp">
-      <h1>Offences</h1>
-
-      {headlines.map(headline => (
-        <Headline offence={headline} />
-      ))}
-    </table>
-  );
-}
-
-function Headline(prop) {
-  return (
-      <tr>
-        <td>
-          {prop.offence}
-        </td>
-      </tr>
-      
-  );
-}
-
-export function getSearch() {
-  let searchForm = document.getElementById("searchBox").value;
-  //The parameters of the call
-  let getParam = { method: "GET" };
-  let head = { Authorization: `Bearer ${getCookie("JWT")}` };
-  getParam.headers = head;
-
-  valSearch(getCookie("JWT"));
-
-  //The URL
-  const baseUrl = "https://cab230.hackhouse.sh/search?";
-  const query = 'offence=' + searchForm;
-  const url = baseUrl + query;
-
-  return fetch(encodeURI(url),getParam)
-    .then(res => res.json())
-    .then(res => res.query); 
-}
-
-export function useSearch() {
-  const [loading, setLoading] = useState(true);
-  const [headlines, setHeadlines] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    getSearch()
-      .then(headlines => {
-        console.log(headlines);
-        setHeadlines(headlines);
-        setLoading(false);
-      })
-
-      .catch(e => {
-        setError(e);
-        setLoading(false);
-      });
-  }, []);
-
-  return {
-    loading,
-    headlines,
-    error
-  };
-}
-
-function Searchapp() {
-  const { loading, headlines, error } = useSearch();
-
-  if (loading === true) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Loading...</p>;
-  }
-  return (
-    <table className="tableapp">
-      <h1>Offences</h1>
-
-      {headlines.map(headline => (
-        <Search offence={headline} />
-      ))}
-    </table>
-  );
-}
-
-function Search(prop) {
-  return (
-      <tr>
-        <td>
-          {prop.offence}
-        </td>
-      </tr>
-      
-  );
-}
-
-
-
-function searchButton() {
-  let searchForm = document.getElementById("searchBox").value;
-  //The parameters of the call
-  let getParam = { method: "GET" };
-  let head = { Authorization: `Bearer ${getCookie("JWT")}` };
-  getParam.headers = head;
-
-  valSearch(getCookie("JWT"));
-
-  //The URL
-  const baseUrl = "https://cab230.hackhouse.sh/search?";
-  const query = 'offence=' + searchForm;
-  const url = baseUrl + query;
-
-  fetch(encodeURI(url),getParam)
-      .then(function(response) {
-          if (response.ok) {
-              return response.json();
-          }
-          throw new Error("Network response was not ok.");
-      })
-      .then(function(result) {
-          let appDiv = document.getElementById("app");
-          appDiv.innerHTML = JSON.stringify(result);
-      })
-
-      .catch(function(error) {
-            console.log(url)
-            console.log("There has been a problem with your fetch operation: ",error.message);
-          });
-
-}
-
-
-function GetData() {
-
-  fetch("https://cab230.hackhouse.sh/offences")
-      .then(function(response) {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Network response was not ok.");
-      })
-      .then(function(result) {
-          let appDiv = document.getElementById("app");
-          appDiv.innerHTML = JSON.stringify(result);
-      })
-      .catch(function(error) {
-          console.log("There has been a problem with your fetch operation: ",error.message);
-      });
-}
-
-
-function valSearch(param){
-  if (param == null){
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Must login";
-    return true;
-  }
-
-}
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
+function chart(){
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+});
 }
