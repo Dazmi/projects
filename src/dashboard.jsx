@@ -15,16 +15,17 @@ return (
     <div className="banner"></div>
     <div className="box">
       <h2>Categories</h2>
-      <Dropdown />
-
+    
+      <Dropdown category={"offences"}/>
+      <Dropdown category={"areas"}/>
+      <Dropdown category={"ages"}/>
+      <Dropdown category={"genders"}/>
+      <Dropdown category={"years"}/>
 
       <button onClick={() => RenderTable("offences")}>Offences</button>
-      <button onClick={() => RenderTable("areas")}>Areas</button>
-      <button onClick={() => RenderTable("ages")}>Ages</button>
-      <button onClick={() => RenderTable("genders")}>Genders</button>
-      <button onClick={() => RenderTable("years")}>Years</button>
+
       <button onClick={chart}>Chart</button>
-      <button onClick={SearchTable}>Search</button>
+      <button onClick={Search}>Search</button>
 
     </div>
     <canvas id="myChart"></canvas>
@@ -34,10 +35,14 @@ return (
 );
 }}
 
+/*
+<button onClick={() => RenderTable("areas")}>Areas</button>
+<button onClick={() => RenderTable("ages")}>Ages</button>
+<button onClick={() => RenderTable("genders")}>Genders</button>
+<button onClick={() => RenderTable("years")}>Years</button>
+*/
 
-function SearchTable(){
-  ReactDOM.render(<Search />, document.getElementById("app"));
-}
+
 
 function chart(){
   var ctx = document.getElementById('myChart').getContext('2d');

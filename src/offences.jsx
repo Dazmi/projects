@@ -3,21 +3,20 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 
-let category = ''
-function getHeadlines() {
-  const url = `https://cab230.hackhouse.sh/${category}`;
+function getHeadlines(props) {
+  const url = `https://cab230.hackhouse.sh/${props}`;
+  console.log(url)
   return fetch(url)
     .then(res => res.json())
-
 }
 
-function useNewsArticles() {
+function useNewsArticles(props) {
   const [loading, setLoading] = useState(true);
   const [headlines, setHeadlines] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getHeadlines()
+    getHeadlines(props)
       .then(headlines => {
         setHeadlines(headlines);
         setLoading(false);
@@ -27,7 +26,7 @@ function useNewsArticles() {
         setError(e);
         setLoading(false);
       });
-  }, []);
+  }, [props]);
 
   return {
     loading,
@@ -37,8 +36,8 @@ function useNewsArticles() {
 }
 
 
-export function CreateTables() {
-const { loading, headlines, error } = useNewsArticles();
+export function CreateTables(props) {
+const { loading, headlines, error } = useNewsArticles(props.content);
 if (loading === true) {
 return <p>Loading...</p>;
 }
@@ -46,7 +45,8 @@ return <p>Loading...</p>;
 if (error) {
 return <p>Loading...</p>;
 }
-if (category == "offences"){
+console.log(props.content)
+if (props.content == "offences"){
 return (
 <table className="app">
   <h1>Offences</h1>
@@ -59,7 +59,7 @@ return (
   ))}
 </table>
 )}
-if (category == "areas"){
+if (props.content == "areas"){
 return (
 <table className="app">
   <h1>Area</h1>
@@ -72,7 +72,7 @@ return (
   ))}
 </table>
 )}
-if (category == "ages") {
+if (props.content == "ages") {
 return (
 <table className="app">
   <h1>Ages</h1>
@@ -86,7 +86,7 @@ return (
   ))}
 </table>
 )}
-if (category == "genders"){
+if (props.content == "genders"){
 return (
 <table className="app">
   <h1>Genders</h1>
@@ -99,7 +99,7 @@ return (
   ))}
 </table>
 )}
-if (category == "years"){
+if (props.content == "years"){
 return (
 <table className="app">
   <h1>Years</h1>
@@ -115,8 +115,7 @@ return (
 
 
 export function RenderTable(content){
-  category = content
-  ReactDOM.render(<CreateTables />, document.getElementById("app"));
+  ReactDOM.render(<CreateTables content={content}/>, document.getElementById("app"));
 }
 
   

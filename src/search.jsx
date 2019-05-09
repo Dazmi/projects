@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Offdrop from "./offdrop.jsx"
 
 
 let search = ''
@@ -19,18 +18,9 @@ function getHeadlines(){
   const query = `offence=${search}`;
   const url = baseUrl + query;
 
-  
+  console.log(url)
   return fetch(encodeURI(url),getParam)
     .then(res => res.json())
-    .then(res => res.result)
-    .then((result) =>
-    result.map((result) => ({
-      LGA: result.LGA,
-      total: result.total,
-      lat: result.lat,
-      lng: result.lng,
-      })),
-      );
 }
 
 function useNewsArticles() {
@@ -43,7 +33,6 @@ function useNewsArticles() {
       .then(headlines => {
         setHeadlines(headlines);
         setLoading(false);
-        console.log(headlines)
       })
 
       .catch(e => {
@@ -60,7 +49,7 @@ function useNewsArticles() {
 }
 
 
-export default function App() {
+function App(props) {
   const { loading, headlines, error } = useNewsArticles();
 
   if (loading === true) {
@@ -70,30 +59,27 @@ export default function App() {
   if (error) {
     return <p>Loading...</p>;
   }
+  console.log(headlines.result)
+  if (props.content == 'offences')
   return (
     <table className="app">
+
     <h1>Search</h1>
 
-      {headlines.map(headline => (
-        <Headline LGA={headline.LGA} total={headline.total}/>
+      {headlines.result.map(headline => (
+            <tr>
+            <td>
+              {headline.LGA}
+            </td>
+            <td>
+              {headline.total}
+            </td>
+          </tr>
       ))}
     </table> 
   );
 }
 
-function Headline(prop) {
-  return (
-    <tr>
-    <td>
-      {prop.LGA}
-    </td>
-    <td>
-      {prop.total}
-    </td>
-  </tr>
-      
-  );
-}
 
 
 
@@ -111,6 +97,10 @@ function getCookie(cname) {
     }
   }
   return "";
+}
+
+export default function SearchTable(props){
+  ReactDOM.render(<App content={props}/>, document.getElementById("app"));
 }
 
 
