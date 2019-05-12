@@ -4,8 +4,7 @@ import Nav from "./nav.jsx"
 
 
 
-export default class App extends React.Component {
-render(){
+export default function login(){
 return (
 
 <div>
@@ -24,7 +23,7 @@ return (
   <div id="app"></div>
 </div>
 );
-}}
+}
 
 
 function logButton() {

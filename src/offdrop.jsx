@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Component, createFactory } from "react";
+import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 
 function getHeadlines(props) {
@@ -44,9 +43,9 @@ export default function App(props) {
   if (error) {
     return <p>Loading...</p>;
   }
-  if (props.category == 'offences'){
+  if (props.category === 'offences'){
     return (
-      <select id='offences'>
+      <select id='offence'>
         {headlines.offences.map(headline => (
         <option>
           {headline}
@@ -55,9 +54,9 @@ export default function App(props) {
       </select>
         );
   }
-  if (props.category == 'areas'){
+  if (props.category === 'areas'){
     return (
-      <select id='areas'>
+      <select id='area'>
         {headlines.areas.map(headline => (
         <option>
           {headline}
@@ -66,9 +65,9 @@ export default function App(props) {
       </select>
         );
   }
-  if (props.category == 'ages'){
+  if (props.category === 'ages'){
     return (
-      <select id='ages'>
+      <select id='age'>
         {headlines.ages.map(headline => (
         <option>
           {headline}
@@ -77,9 +76,9 @@ export default function App(props) {
       </select>
         );
   }
-  if (props.category == 'genders'){
+  if (props.category === 'genders'){
     return (
-      <select id='genders'>
+      <select id='gender'>
         {headlines.genders.map(headline => (
         <option>
           {headline}
@@ -88,9 +87,9 @@ export default function App(props) {
       </select>
         );
   }
-  if (props.category == 'years'){
+  if (props.category === 'years'){
     return (
-      <select id='years'>
+      <select id='year'>
         {headlines.years.map(headline => (
         <option>
           {headline}
@@ -102,15 +101,3 @@ export default function App(props) {
 }
 
   
-  
-
-function Headline(prop) {
-  return (
-      <option>
-          {prop.offence}
-      </option>
-      
-  );
-}
-
-

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 
-function getHeadlines(props) {
+export function getHeadlines(props) {
   const url = `https://cab230.hackhouse.sh/${props}`;
   console.log(url)
   return fetch(url)
     .then(res => res.json())
 }
 
-function useNewsArticles(props) {
+export function useNewsArticles(props) {
   const [loading, setLoading] = useState(true);
   const [headlines, setHeadlines] = useState([]);
   const [error, setError] = useState(null);
@@ -45,88 +44,100 @@ return <p>Loading...</p>;
 if (error) {
 return <p>Loading...</p>;
 }
-console.log(props.content)
-if (props.content == "offences"){
+console.log(headlines)
+if (props.content === "offences"){
 return (
-<table className="app">
+<div>
   <h1>Offences</h1>
-  {headlines.offences.map(headline => (
-  <tr>
-    <td>
-      {headline}
-    </td>
-  </tr>
-  ))}
-</table>
-)}
-if (props.content == "areas"){
-return (
-<table className="app">
-  <h1>Area</h1>
-  {headlines.areas.map(headline => (
-  <tr>
-    <td>
-      {headline}
-    </td>
-  </tr>
-  ))}
-</table>
-)}
-if (props.content == "ages") {
-return (
-<table className="app">
-  <h1>Ages</h1>
-  {headlines.ages.map(headline => (
-  <tr>
-    <td>
-      {headline}
-    </td>
-  </tr>
+  <table className="app">
+    <tbody>
+      {headlines.offences.map(headline => (
 
-  ))}
-</table>
+      <tr>
+        <td>
+          {headline}
+        </td>
+      </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 )}
-if (props.content == "genders"){
+if (props.content === "areas"){
 return (
-<table className="app">
+<div>
+  <h1>Area</h1>
+  <table className="app">
+    <tbody>
+
+      {headlines.areas.map(headline => (
+      <tr>
+        <td>
+          {headline}
+        </td>
+      </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+)}
+if (props.content === "ages") {
+return (
+<div>
+  <h1>Ages</h1>
+  <table className="app">
+    <tbody>
+
+      {headlines.ages.map(headline => (
+      <tr>
+        <td>
+          {headline}
+        </td>
+      </tr>
+
+      ))}
+    </tbody>
+  </table>
+</div>
+)}
+if (props.content === "genders"){
+return (
+<div>
   <h1>Genders</h1>
-  {headlines.genders.map(headline => (
-  <tr>
-    <td>
-      {headline}
-    </td>
-  </tr>
-  ))}
-</table>
+  <table className="app">
+    <tbody>
+      {headlines.genders.map(headline => (
+      <tr>
+        <td>
+          {headline}
+        </td>
+      </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 )}
-if (props.content == "years"){
+if (props.content === "years"){
 return (
-<table className="app">
+<div>
   <h1>Years</h1>
-  {headlines.years.map(headline => (
-  <tr>
-    <td>
-      {headline}
-    </td>
-  </tr>
-  ))}
-</table>
-)}}
+  <table className="app">
+    <tbody>
+      {headlines.years.map(headline => (
+      <tr>
+        <td>
+          {headline}
+        </td>
+      </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+)}
+
+}
 
 
 export function RenderTable(content){
   ReactDOM.render(<CreateTables content={content}/>, document.getElementById("app"));
 }
-
-  
-function Offence(prop) {
-  return (
-      <tr>
-        <td>
-          {prop.offence}
-        </td>
-      </tr>  
-  );
-}
-
-

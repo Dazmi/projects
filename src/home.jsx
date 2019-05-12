@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Nav from "./nav.jsx"
-export default class Home extends React.Component {
-render(){
+export default function home() {
 return (
 <div>
-  <Nav />
   <div className="bluebg banner">
     <h1>Welcome</h1>
     <p>Click to register</p>
@@ -23,4 +21,4 @@ return (
   </div>
 </div>
 );
-}}
+}

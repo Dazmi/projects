@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import logo from './img/jdotw.png';
-import global from "./global.jsx"
 
-export default class Home extends React.Component {
-render(){
+export default function nav() {
 if (!document.cookie) {
 return (
 <nav>
@@ -20,11 +18,14 @@ return (
     </li>
   </ul>
 </nav>
+
 );
 }
  
 else {
   return (
+
+
   <nav>
   <Link to="/"><img id="logo" src={logo} alt="logo"></img></Link>
   <ul>
@@ -42,9 +43,10 @@ else {
 
   </ul>
 </nav>
+
   );  
 }
-}}
+}
 
 
 function getCookie(cname) {

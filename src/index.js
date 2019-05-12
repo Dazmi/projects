@@ -5,7 +5,7 @@ import { Chart } from "react-google-charts";
 import Home from "./home.jsx";
 import "./styles.css";
 import Scroll from "./ScrollToTopRoute.js";
-
+import Nav from "./nav.jsx"
 import Register from "./register.jsx"
 import Login from "./login"
 import Dashboard from "./dashboard.jsx"
@@ -17,6 +17,7 @@ import Dashboard from "./dashboard.jsx"
 function Main() {
   return (
     <Router>
+      <Nav />
       <Scroll exact path="/" component={Home} />
       <Scroll path="/register" component={Register} />
       <Scroll path="/login" component={Login} />
