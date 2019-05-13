@@ -2,56 +2,36 @@ import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 
 
-export function getHeadlines(props) {
+export function useTable(props) {
   const url = `https://cab230.hackhouse.sh/${props}`;
   console.log(url)
-  return fetch(url)
-    .then(res => res.json())
-}
 
-export function useNewsArticles(props) {
-  const [loading, setLoading] = useState(true);
-  const [headlines, setHeadlines] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    getHeadlines(props)
-      .then(headlines => {
-        setHeadlines(headlines);
-        setLoading(false);
-      })
-
-      .catch(e => {
-        setError(e);
-        setLoading(false);
-      });
-  }, [props]);
-
-  return {
-    loading,
-    headlines,
-    error
-  };
+  fetch(url)
+  //.then(res => res.json())
+  .then(function(response) {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error("Network response was not ok");
+  })
+  .then(function(result) {
+    ReactDOM.render(<GetTable context={result} name={props} />, document.getElementById("app"));
+  })
+  .catch(function(error) {
+    console.log("There has been a problem with your fetch operation: ",error.message);
+  });
 }
 
 
-export function CreateTables(props) {
-const { loading, headlines, error } = useNewsArticles(props.content);
-if (loading === true) {
-return <p>Loading...</p>;
-}
-
-if (error) {
-return <p>Loading...</p>;
-}
-console.log(headlines)
-if (props.content === "offences"){
+function GetTable(props){
+console.log(props.context.offences)
+if (props.name === "offences"){
 return (
 <div>
   <h1>Offences</h1>
   <table className="app">
     <tbody>
-      {headlines.offences.map(headline => (
+      {props.context.offences.map(headline => (
 
       <tr>
         <td>
@@ -63,14 +43,14 @@ return (
   </table>
 </div>
 )}
-if (props.content === "areas"){
+if (props.name === "areas"){
 return (
 <div>
   <h1>Area</h1>
   <table className="app">
     <tbody>
 
-      {headlines.areas.map(headline => (
+      {props.context.areas.map(headline => (
       <tr>
         <td>
           {headline}
@@ -81,14 +61,14 @@ return (
   </table>
 </div>
 )}
-if (props.content === "ages") {
+if (props.name === "ages") {
 return (
 <div>
   <h1>Ages</h1>
   <table className="app">
     <tbody>
 
-      {headlines.ages.map(headline => (
+      {props.context.ages.map(headline => (
       <tr>
         <td>
           {headline}
@@ -100,13 +80,13 @@ return (
   </table>
 </div>
 )}
-if (props.content === "genders"){
+if (props.name === "genders"){
 return (
 <div>
   <h1>Genders</h1>
   <table className="app">
     <tbody>
-      {headlines.genders.map(headline => (
+      {props.context.genders.map(headline => (
       <tr>
         <td>
           {headline}
@@ -117,13 +97,13 @@ return (
   </table>
 </div>
 )}
-if (props.content === "years"){
+if (props.name === "years"){
 return (
 <div>
   <h1>Years</h1>
   <table className="app">
     <tbody>
-      {headlines.years.map(headline => (
+      {props.context.years.map(headline => (
       <tr>
         <td>
           {headline}
@@ -135,9 +115,4 @@ return (
 </div>
 )}
 
-}
-
-
-export function RenderTable(content){
-  ReactDOM.render(<CreateTables content={content}/>, document.getElementById("app"));
 }

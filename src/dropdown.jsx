@@ -57,6 +57,9 @@ export default function App(props) {
   if (props.category === 'areas'){
     return (
       <select id='area'>
+        <option>
+          Select
+        </option>
         {headlines.areas.map(headline => (
         <option>
           {headline}
@@ -68,6 +71,9 @@ export default function App(props) {
   if (props.category === 'ages'){
     return (
       <select id='age'>
+        <option>
+          Select
+        </option>
         {headlines.ages.map(headline => (
         <option>
           {headline}
@@ -79,6 +85,9 @@ export default function App(props) {
   if (props.category === 'genders'){
     return (
       <select id='gender'>
+              <option>
+          Select
+        </option>
         {headlines.genders.map(headline => (
         <option>
           {headline}
@@ -90,6 +99,9 @@ export default function App(props) {
   if (props.category === 'years'){
     return (
       <select id='year'>
+        <option>
+          Select
+        </option>
         {headlines.years.map(headline => (
         <option>
           {headline}

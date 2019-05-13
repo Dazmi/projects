@@ -1,9 +1,8 @@
 import React, { useState, useEffect, Component } from "react";
-import ReactDOM from "react-dom";
+import Chart from 'chart.js';
 
 
-
-export function useSearch(){
+export function useChart(){
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
@@ -22,19 +21,19 @@ export function useSearch(){
   //The URL
   let baseUrl = "http://hackhouse.sh:3000/search?";
   let url = baseUrl
-  if (offenceOption != 'Select'){
+  if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
   }
-  if (areaOption != 'Select'){
+  if (areaOption !== 'Select'){
     url = url + `&area=${areaOption}`;
   }
-  if (ageOption != 'Select'){
+  if (ageOption !== 'Select'){
     url = url + `&age=${ageOption}`;
   }
-  if (genderOption != 'Select'){
+  if (genderOption !== 'Select'){
     url = url + `&gender=${genderOption}`;
   }
-  if (yearOption != 'Select'){
+  if (yearOption !== 'Select'){
     url = url + `&year=${yearOption}`;
   }
   console.log(url)
@@ -47,7 +46,7 @@ export function useSearch(){
       throw new Error("Network response was not ok");
     })
     .then(function(result) {
-      ReactDOM.render(<GetTable context={result} />, document.getElementById("app"));
+      barChart(result)
     })
     .catch(function(error) {
       console.log("There has been a problem with your fetch operation: ",error.message);
@@ -55,29 +54,73 @@ export function useSearch(){
     
 }
 
-function GetTable(props){
-  console.log(props.context)
-  return(
-    <div>
-    <h1>{props.context.query.offence}</h1>
-    <table className="table">
-    <tbody>
-    {props.context.result.map(context => (
-      <tr>
-        <td>
-          {context.LGA}
-        </td>
-        <td>
-          {context.total}
-        </td>
-      </tr>
-      ))}
-      </tbody>
-    </table>
-  </div>
-  )
+export function barChart(props) {
+  let lgaData = []
+  let totalData = []
+
+  props.result.map(context => (
+    lgaData.push(context.LGA),
+    totalData.push(context.total) ))
+    
+	var ctx = document.getElementById('myChart').getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+			labels: lgaData,
+			datasets: [{
+				label: '# Crimes',
+				data: totalData,
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	});
 }
 
+export function lineChart(props) {
+  let yearData = []
+  let url = "http://hackhouse.sh:3000/search?";
+  fetch(url)
+  .then(res => res.json())
+  .then(res => res.years)
+
+  let lgaData = []
+  let totalData = []
+
+  props.result.map(context => (
+    lgaData.push(context.LGA),
+    totalData.push(context.total) ))
+    
+	var ctx = document.getElementById('myChart').getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', ],
+			datasets: [{
+				label: '# Crimes',
+				data: totalData,
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	});
+}
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -95,10 +138,3 @@ function getCookie(cname) {
   return "";
 }
 
-function valSearch(param){
-  if (param == null){
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Must login";
-    return true;
-  }
-}
