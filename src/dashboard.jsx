@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Nav from "./nav.jsx"
 import { Offences, RenderTable }from "./offences.jsx"
-import { SearchTable } from "./search.jsx"
+import { GetHeadlines } from "./search.jsx"
 import Dropdown from "./offdrop.jsx"
 import Chart from 'chart.js';
 
@@ -23,7 +23,7 @@ return (
 		Ages: <Dropdown category={"ages"} /><br />
 		Gender: <Dropdown category={"genders"} /><br />
 		Year: <Dropdown category={"years"} /><br />
-		<button onClick={()=> SearchTable("hi")}>Filter</button><br />
+		<button onClick={GetHeadlines}>Filter</button><br />
 
 		
 

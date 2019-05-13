@@ -3,9 +3,8 @@ import ReactDOM from "react-dom";
 
 
 
-function getHeadlines(props){
+export function GetHeadlines(){
   //The parameters of the call
-  console.log(props)
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
   let age = document.getElementById("age")
@@ -21,87 +20,55 @@ function getHeadlines(props){
   getParam.headers = head;
 
   //The URL
-  const baseUrl = "http://hackhouse.sh:3000/search?";
-  const query1 = `offence=${offenceOption}`;
-  const query2 = `&area=${areaOption}`;
-  const query3 = `&age=${ageOption}`;
-  const query4 = `&gender=${genderOption}`;
-  const query5 = `&year=${yearOption}`;
-  const url = baseUrl + query1 + query2 + query3 + query4 + query5;
+  let baseUrl = "http://hackhouse.sh:3000/search?";
+  let query1 = `offence=${offenceOption}`;
+  let query2 = `&area=${areaOption}`;
+  let query3 = `&age=${ageOption}`;
+  let query4 = `&gender=${genderOption}`;
+  let query5 = `&year=${yearOption}`;
+  let url = baseUrl + query1;
 
   console.log(url)
-  return fetch(encodeURI(url),getParam)
-    .then(res => res.json())
-
+  fetch(encodeURI(url),getParam)
+    //.then(res => res.json())
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("Network response was not ok");
+    })
+    .then(function(result) {
+      ReactDOM.render(<GetTable context={result} />, document.getElementById("app"));
+    })
+    .catch(function(error) {
+      console.log("There has been a problem with your fetch operation: ",error.message);
+    });
+    
 }
 
-function useNewsArticles(props) {
-  const [loading, setLoading] = useState(true);
-  const [headlines, setHeadlines] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    getHeadlines(props)
-      .then(headlines => {
-        setHeadlines(headlines);
-        setLoading(false);
-      })
-
-      .catch(e => {
-        setError(e);
-        setLoading(false);
-      });
-  }, [props]);
-
-  return {
-    loading,
-    headlines,
-    error
-  };
-}
-
-
-export function App(props) {
-  const { loading, headlines, error } = useNewsArticles(props.content);
-
-  if (loading === true) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Loading...</p>;
-  }
-  console.log(headlines)
-  console.log(headlines.query.offence)
-  return (
+function GetTable(props){
+  console.log(props.context)
+  return(
     <div>
-      <h1>{headlines.query.offence}</h1>
-      <table className="table">
-      {headlines.result.map(headline => (
-        <tbody>
-        <tr>
-          <th>
-            Area
-          </th>
-          <th>
-            Total
-          </th>
-        </tr>
-        <tr>
-          <td>
-            {headline.LGA}
-          </td>
-          <td>
-            {headline.total}
-          </td>
-        </tr>
+    <h1>{props.context.query.offence}</h1>
+    <table className="table">
+    <tbody>
+    {props.context.result.map(context => (
+      <tr>
+        <td>
+          {context.LGA}
+        </td>
+        <td>
+          {context.total}
+        </td>
+      </tr>
+      ))}
       </tbody>
-        ))}
-      </table>
-    </div>
-  );
-  
+    </table>
+  </div>
+  )
 }
+
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -118,11 +85,6 @@ function getCookie(cname) {
   }
   return "";
 }
-
-export function SearchTable(props){
-  ReactDOM.render(<App content={props}/>, document.getElementById("app"));
-}
-
 
 function valSearch(param){
   if (param == null){

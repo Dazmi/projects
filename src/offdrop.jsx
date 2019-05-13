@@ -3,16 +3,16 @@ import ReactDOM from "react-dom";
 
 
 function getHeadlines(props) {
-  const url = `https://cab230.hackhouse.sh/${props}`;
+  let url = `https://cab230.hackhouse.sh/${props}`;
   console.log(url)
   return fetch(url)
     .then(res => res.json())
 }
 
 function useNewsArticles(props) {
-  const [loading, setLoading] = useState(true);
-  const [headlines, setHeadlines] = useState([]);
-  const [error, setError] = useState(null);
+  let [loading, setLoading] = useState(true);
+  let [headlines, setHeadlines] = useState([]);
+  let [error, setError] = useState(null);
 
   useEffect(() => {
     getHeadlines(props)
@@ -35,7 +35,7 @@ function useNewsArticles(props) {
 }
 
 export default function App(props) {
-  const { loading, headlines, error } = useNewsArticles(props.category);
+  let { loading, headlines, error } = useNewsArticles(props.category);
   if (loading === true) {
     return <p>Loading...</p>;
   }
