@@ -32,7 +32,6 @@ return (
   <table className="app">
     <tbody>
       {props.context.offences.map(headline => (
-
       <tr>
         <td>
           {headline}

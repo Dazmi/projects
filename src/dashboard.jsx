@@ -6,7 +6,7 @@ import { Offences, useTable }from "./offences.jsx"
 import { useSearch } from "./search.jsx"
 import Dropdown from "./dropdown.jsx"
 import { useChart } from "./chart.jsx"
-import { createMap } from "./map.jsx"
+import { getArea } from "./map.jsx"
 
 export default function home() {
 return (
@@ -16,7 +16,6 @@ return (
 	<div className="box">
 
 		<h3>Filters</h3>
-		
 		Offence: <Dropdown category={"offences"} /><br />
 		Areas: <Dropdown category={"areas"} /><br />
 		Ages: <Dropdown category={"ages"} /><br />
@@ -24,7 +23,7 @@ return (
 		Year: <Dropdown category={"years"} /><br />
 		<button onClick={useSearch}>Table</button>
 		<button onClick={useChart}>Chart</button>
-		<button onClick={createMap}>Map</button><br />
+		<button onClick={getArea}>Map</button><br />
 		<div id='app'></div>
 	</div>
 

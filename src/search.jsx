@@ -20,7 +20,7 @@ export function useSearch(){
   getParam.headers = head;
 
   //The URL
-  let baseUrl = "http://hackhouse.sh:3000/search?";
+  let baseUrl = "https://cab230.hackhouse.sh/search?";
   let url = baseUrl
   if (offenceOption != 'Select'){
     url = url + `offence=${offenceOption}`
@@ -47,7 +47,7 @@ export function useSearch(){
       throw new Error("Network response was not ok");
     })
     .then(function(result) {
-      ReactDOM.render(<GetTable context={result} />, document.getElementById("app"));
+      GetTable(result)
     })
     .catch(function(error) {
       console.log("There has been a problem with your fetch operation: ",error.message);
@@ -56,13 +56,11 @@ export function useSearch(){
 }
 
 function GetTable(props){
-  console.log(props.context)
-  return(
-    <div>
-    <h1>{props.context.query.offence}</h1>
+    let table = <div>
+    <h1>{props.query.offence}</h1>
     <table className="table">
     <tbody>
-    {props.context.result.map(context => (
+    {props.result.map(context => (
       <tr>
         <td>
           {context.LGA}
@@ -75,7 +73,7 @@ function GetTable(props){
       </tbody>
     </table>
   </div>
-  )
+  ReactDOM.render(table, document.getElementById("app"))
 }
 
 
