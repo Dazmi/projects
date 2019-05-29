@@ -20,7 +20,7 @@ export function getChart(){
   getParam.headers = head;
 
   //The URL
-  let baseUrl = "http://hackhouse.sh:3000/search?";
+  let baseUrl = "https://cab230.hackhouse.sh/search?";
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -57,13 +57,16 @@ export function getChart(){
 
 
 export async function barChart(props) {
+
   ReactDOM.render(<canvas id="myChart"></canvas>,document.getElementById('app'));
+
   let lgaData = []
   let totalData = []
-
-  props.result.map(context => (
-    lgaData.push(context.LGA),
-    totalData.push(context.total) ))
+  {props.result.map(function(props) {
+    if (props.total != 0){
+      lgaData.push(props.LGA)
+      totalData.push(props.total)
+    }})}
     
 	var ctx = document.getElementById('myChart').getContext('2d');
 	var myChart = new Chart(ctx, {

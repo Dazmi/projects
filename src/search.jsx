@@ -58,16 +58,26 @@ function GetTable(props){
     <h1>{props.query.offence}</h1>
     <table className="table">
     <tbody>
-    {props.result.map(context => (
       <tr>
+        <th>
+          Area
+        </th>
+        <th>
+          Total
+        </th>
+      </tr>
+    {props.result.map(function(props) {
+      if (props.total != 0){
+        return <tr>
         <td>
-          {context.LGA}
+          {props.LGA}
         </td>
         <td>
-          {context.total}
+          {props.total}
         </td>
       </tr>
-      ))}
+      }})}
+
       </tbody>
     </table>
   </div>

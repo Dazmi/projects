@@ -87,12 +87,13 @@ export function getAreas() {
 export function createMap(props){
   let marker = [];
   
-  {props.result.map(props => (
+  {props.result.map(function(props) {
+    if (props.total != 0){
     marker.push(<Marker
-    position={{ lat: props.lat, lng: props.lng }}// marker position={} title={}
+    position={{ lat: props.lat, lng: props.lng }}
     title={props.LGA + ' : ' + props.total}
     />)
-    ))}
+    }})}
 
     const MapWithAMarker = withGoogleMap(props =>
         <GoogleMap
