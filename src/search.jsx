@@ -1,9 +1,7 @@
-import React, { useState, useEffect, Component } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
-
-
-export function useSearch(){
+export function getSearch(){
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
@@ -22,19 +20,19 @@ export function useSearch(){
   //The URL
   let baseUrl = "https://cab230.hackhouse.sh/search?";
   let url = baseUrl
-  if (offenceOption != 'Select'){
+  if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
   }
-  if (areaOption != 'Select'){
+  if (areaOption !== 'Select'){
     url = url + `&area=${areaOption}`;
   }
-  if (ageOption != 'Select'){
+  if (ageOption !== 'Select'){
     url = url + `&age=${ageOption}`;
   }
-  if (genderOption != 'Select'){
+  if (genderOption !== 'Select'){
     url = url + `&gender=${genderOption}`;
   }
-  if (yearOption != 'Select'){
+  if (yearOption !== 'Select'){
     url = url + `&year=${yearOption}`;
   }
   console.log(url)

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, Component } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
+import { getCookie } from "./nav.jsx"
 import {
     withGoogleMap,
     GoogleMap,
@@ -27,19 +28,19 @@ export function getArea(){
   //The URL
   let baseUrl = "https://cab230.hackhouse.sh/search?";
   let url = baseUrl
-  if (offenceOption != 'Select'){
+  if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
   }
-  if (areaOption != 'Select'){
+  if (areaOption !== 'Select'){
     url = url + `&area=${areaOption}`;
   }
-  if (ageOption != 'Select'){
+  if (ageOption !== 'Select'){
     url = url + `&age=${ageOption}`;
   }
-  if (genderOption != 'Select'){
+  if (genderOption !== 'Select'){
     url = url + `&gender=${genderOption}`;
   }
-  if (yearOption != 'Select'){
+  if (yearOption !== 'Select'){
     url = url + `&year=${yearOption}`;
   }
   console.log(url)
@@ -108,20 +109,4 @@ export function createMap(props){
       />
       ReactDOM.render(map, document.getElementById("app"))
     
-}
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }

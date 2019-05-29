@@ -5,7 +5,6 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
-    "@react-google-maps/api": "^1.2.3",
     "chart.js": "^2.8.0",
     "react": "16.8.3",
     "react-cookie": "^3.1.2",

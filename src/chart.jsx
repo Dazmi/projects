@@ -1,8 +1,9 @@
-import React, { useState, useEffect, Component } from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 import Chart from 'chart.js';
 
 
-export function useChart(){
+export function getChart(){
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
@@ -56,8 +57,7 @@ export function useChart(){
 
 
 export async function barChart(props) {
-  var app = document.getElementById('app')
-  app.innerHTML = '<canvas id="myChart"></canvas>';
+  ReactDOM.render(<canvas id="myChart"></canvas>,document.getElementById('app'));
   let lgaData = []
   let totalData = []
 

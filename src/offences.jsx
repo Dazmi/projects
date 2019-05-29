@@ -2,7 +2,7 @@ import React, { useState, useEffect, Component } from "react";
 import ReactDOM from "react-dom";
 
 
-export function useTable(props) {
+export function getOffences(props) {
   const url = `https://cab230.hackhouse.sh/${props}`;
   console.log(url)
 
@@ -15,23 +15,23 @@ export function useTable(props) {
     throw new Error("Network response was not ok");
   })
   .then(function(result) {
-    ReactDOM.render(<GetTable context={result} name={props} />, document.getElementById("app"));
+    getTable(result)
   })
   .catch(function(error) {
     console.log("There has been a problem with your fetch operation: ",error.message);
   });
 }
 
-
-function GetTable(props){
-console.log(props.context.offences)
+function getTable(props){
+console.log(props)
+let table = null;
 if (props.name === "offences"){
-return (
+table = 
 <div>
   <h1>Offences</h1>
   <table className="app">
     <tbody>
-      {props.context.offences.map(headline => (
+      {props.offences.map(headline => (
       <tr>
         <td>
           {headline}
@@ -41,15 +41,15 @@ return (
     </tbody>
   </table>
 </div>
-)}
+}
 if (props.name === "areas"){
-return (
+table = 
 <div>
   <h1>Area</h1>
   <table className="app">
     <tbody>
 
-      {props.context.areas.map(headline => (
+      {props.areas.map(headline => (
       <tr>
         <td>
           {headline}
@@ -59,15 +59,15 @@ return (
     </tbody>
   </table>
 </div>
-)}
+}
 if (props.name === "ages") {
-return (
+table = 
 <div>
   <h1>Ages</h1>
   <table className="app">
     <tbody>
 
-      {props.context.ages.map(headline => (
+      {props.ages.map(headline => (
       <tr>
         <td>
           {headline}
@@ -78,14 +78,14 @@ return (
     </tbody>
   </table>
 </div>
-)}
+}
 if (props.name === "genders"){
-return (
+table = 
 <div>
   <h1>Genders</h1>
   <table className="app">
     <tbody>
-      {props.context.genders.map(headline => (
+      {props.genders.map(headline => (
       <tr>
         <td>
           {headline}
@@ -95,14 +95,14 @@ return (
     </tbody>
   </table>
 </div>
-)}
+}
 if (props.name === "years"){
-return (
+table = 
 <div>
   <h1>Years</h1>
   <table className="app">
     <tbody>
-      {props.context.years.map(headline => (
+      {props.years.map(headline => (
       <tr>
         <td>
           {headline}
@@ -112,6 +112,6 @@ return (
     </tbody>
   </table>
 </div>
-)}
-
+}
+ReactDOM.render(table, document.getElementById("app"))
 }

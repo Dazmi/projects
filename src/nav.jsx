@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import logo from './img/jdotw.png';
 
-export default function nav() {
+export function Nav() {
 if (!document.cookie) {
 return (
 <nav>
@@ -24,8 +24,6 @@ return (
  
 else {
   return (
-
-
   <nav>
   <Link to="/"><img id="logo" src={logo} alt="logo"></img></Link>
   <ul>
@@ -34,13 +32,9 @@ else {
       <Link to="/logout">Logout</Link>
     </li>
     <li>
-      <a>Welcome, {getCookie("email")}</a>
-    </li>
-    <li>
       <Link to="/dashboard">Dashboard</Link>
     </li>
-
-
+    <li className="gap"></li>
   </ul>
 </nav>
 
@@ -49,15 +43,15 @@ else {
 }
 
 
-function getCookie(cname) {
+export function getCookie(cname) {
   var name = cname + "=";
   var ca = document.cookie.split(';');
   for(var i = 0; i < ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while (c.charAt(0) === ' ') {
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if (c.indexOf(name) === 0) {
       return c.substring(name.length, c.length);
     }
   }

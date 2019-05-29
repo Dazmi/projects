@@ -1,10 +1,8 @@
-import React, { useState, useEffect, Component } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect} from "react";
 
 
 function getHeadlines(props) {
   let url = `https://cab230.hackhouse.sh/${props}`;
-  console.log(url)
   return fetch(url)
     .then(res => res.json())
 }
@@ -20,7 +18,6 @@ function useNewsArticles(props) {
         setHeadlines(headlines);
         setLoading(false);
       })
-
       .catch(e => {
         setError(e);
         setLoading(false);
@@ -34,82 +31,82 @@ function useNewsArticles(props) {
   };
 }
 
-export default function App(props) {
-  let { loading, headlines, error } = useNewsArticles(props.category);
-  if (loading === true) {
-    return <p>Loading...</p>;
-  }
+export function Dropdown(props) {
+let { loading, headlines, error } = useNewsArticles(props.category);
+if (loading === true) {
+return <div>Loading...</div>;
+}
 
-  if (error) {
-    return <p>Loading...</p>;
-  }
-  if (props.category === 'offences'){
-    return (
-      <select id='offence'>
-        {headlines.offences.map(headline => (
-        <option>
-          {headline}
-        </option>
-        ))}
-      </select>
-        );
-  }
-  if (props.category === 'areas'){
-    return (
-      <select id='area'>
-        <option>
-          Select
-        </option>
-        {headlines.areas.map(headline => (
-        <option>
-          {headline}
-        </option>
-        ))}
-      </select>
-        );
-  }
-  if (props.category === 'ages'){
-    return (
-      <select id='age'>
-        <option>
-          Select
-        </option>
-        {headlines.ages.map(headline => (
-        <option>
-          {headline}
-        </option>
-        ))}
-      </select>
-        );
-  }
-  if (props.category === 'genders'){
-    return (
-      <select id='gender'>
-              <option>
-          Select
-        </option>
-        {headlines.genders.map(headline => (
-        <option>
-          {headline}
-        </option>
-        ))}
-      </select>
-        );
-  }
-  if (props.category === 'years'){
-    return (
-      <select id='year'>
-        <option>
-          Select
-        </option>
-        {headlines.years.map(headline => (
-        <option>
-          {headline}
-        </option>
-        ))}
-      </select>
-        );
-  }
+if (error) {
+return <div>Loading...</div>;
+}
+if (props.category === 'offences'){
+return (
+<select id='offence'>
+  {headlines.offences.map(headline => (
+  <option>
+    {headline}
+  </option>
+  ))}
+</select>
+);
+}
+if (props.category === 'areas'){
+return (
+<select id='area'>
+  <option>
+    Select
+  </option>
+  {headlines.areas.map(headline => (
+  <option>
+    {headline}
+  </option>
+  ))}
+</select>
+);
+}
+if (props.category === 'ages'){
+return (
+<select id='age'>
+  <option>
+    Select
+  </option>
+  {headlines.ages.map(headline => (
+  <option>
+    {headline}
+  </option>
+  ))}
+</select>
+);
+}
+if (props.category === 'genders'){
+return (
+<select id='gender'>
+  <option>
+    Select
+  </option>
+  {headlines.genders.map(headline => (
+  <option>
+    {headline}
+  </option>
+  ))}
+</select>
+);
+}
+if (props.category === 'years'){
+return (
+<select id='year'>
+  <option>
+    Select
+  </option>
+  {headlines.years.map(headline => (
+  <option>
+    {headline}
+  </option>
+  ))}
+</select>
+);
+}
 }
 
   

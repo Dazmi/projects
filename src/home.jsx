@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Nav from "./nav.jsx"
 export default function home() {
 return (
 <div>
@@ -14,7 +13,9 @@ return (
   <div className="box">
     <div className="pod">
       <h1>Crime</h1>
-      <p>Blow thing up with crime</p>
+      <p>Browse through a database of Queenslands offences</p>
+      <p>Click to preview categories of offences</p>
+      <Link to="/offences"><button>View</button></Link>
 
     </div>
 

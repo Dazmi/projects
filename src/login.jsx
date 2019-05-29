@@ -1,6 +1,4 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Nav from "./nav.jsx"
 
 
 
@@ -8,7 +6,6 @@ export default function login(){
 return (
 
 <div>
-  <Nav />
   <div className="space"></div>
   <div className="box center">
     <div className="pod form">
