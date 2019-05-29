@@ -6,7 +6,7 @@ import { Offences, useTable }from "./offences.jsx"
 import { useSearch } from "./search.jsx"
 import Dropdown from "./dropdown.jsx"
 import { useChart } from "./chart.jsx"
-import map from "./map.jsx"
+import { createMap } from "./map.jsx"
 
 export default function home() {
 return (
@@ -24,27 +24,13 @@ return (
 		Year: <Dropdown category={"years"} /><br />
 		<button onClick={useSearch}>Table</button>
 		<button onClick={useChart}>Chart</button>
-		<button onClick={map}>Map</button><br />
-		<Slot />
+		<button onClick={createMap}>Map</button><br />
+		<div id='app'></div>
 	</div>
 
 </div>
-
-
 );
 }
-
-
-function Slot(){
-	return(
-		<div>
-		<canvas id="myChart"></canvas>
-		<div id="app"></div>
-
-		</div>
-	)
-}
-
 
 
 /*

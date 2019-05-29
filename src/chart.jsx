@@ -47,14 +47,17 @@ export function useChart(){
     })
     .then(function(result) {
       barChart(result)
-    })
+    })  
     .catch(function(error) {
       console.log("There has been a problem with your fetch operation: ",error.message);
     });
-    
 }
 
-export function barChart(props) {
+
+
+export async function barChart(props) {
+  var app = document.getElementById('app')
+  app.innerHTML = '<canvas id="myChart"></canvas>';
   let lgaData = []
   let totalData = []
 
