@@ -88,7 +88,7 @@ export function createMap(props){
   let marker = [];
   
   {props.result.map(function(props) {
-    if (props.total != 0){
+    if (props.total !== 0){
     marker.push(<Marker
     position={{ lat: props.lat, lng: props.lng }}
     title={props.LGA + ' : ' + props.total}
@@ -105,7 +105,7 @@ export function createMap(props){
       );
       
       let map = <MapWithAMarker
-        containerElement={<div style={{ height: `400px` }} />}
+        containerElement={<div style={{ height: `700px` }} />}
         mapElement={<div style={{ height: `100%` }} />}
       />
       ReactDOM.render(map, document.getElementById("app"))

@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { getCookie } from './nav.jsx'
 
 export function getSearch(){
   //The parameters of the call
@@ -13,6 +14,7 @@ export function getSearch(){
   let ageOption = age.options[age.selectedIndex].value
   let genderOption = gender.options[gender.selectedIndex].value
   let yearOption = year.options[year.selectedIndex].value
+  
   let getParam = { method: "GET" };
   let head = { Authorization: `Bearer ${getCookie("JWT")}` };
   getParam.headers = head;
@@ -67,7 +69,7 @@ function GetTable(props){
         </th>
       </tr>
     {props.result.map(function(props) {
-      if (props.total != 0){
+      if (props.total !== 0){
         return <tr>
         <td>
           {props.LGA}
@@ -82,23 +84,6 @@ function GetTable(props){
     </table>
   </div>
   ReactDOM.render(table, document.getElementById("app"))
-}
-
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 
 function valSearch(param){
