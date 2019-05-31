@@ -8,7 +8,7 @@ import { Nav } from "./nav.jsx"
 import Register from "./register.jsx"
 import Login from "./login"
 import Dashboard from "./dashboard.jsx"
-import { getOffences } from "./offences"
+import { Offences } from "./offences"
 
 /**
  * Main function which shows navigation
@@ -22,7 +22,7 @@ function Main() {
       <Scroll path="/register" component={Register} />
       <Scroll path="/login" component={Login} />
       <Scroll path="/dashboard" component={Dashboard} />
-      <Scroll path="/offences" component={getOffences} />
+      <Scroll path="/offences" component={Offences} />
       <Scroll path="/logout" component={Logout} />
     </Router>
   );

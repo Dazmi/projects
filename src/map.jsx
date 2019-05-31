@@ -26,7 +26,7 @@ export function getArea(){
   getParam.headers = head;
 
   //The URL
-  let baseUrl = "https://cab230.hackhouse.sh/search?";
+  let baseUrl = "http://localhost:3000/search?";
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -59,29 +59,6 @@ export function getArea(){
       console.log("There has been a problem with your fetch operation: ",error.message);
     });
     
-}
-
-export function getAreas() {
-  const url = `https://cab230.hackhouse.sh/search?offence=Assault`;
-  console.log(url)
-  let getParam = { method: "GET" };
-  let head = { Authorization: `Bearer ${getCookie("JWT")}` };
-  getParam.headers = head;
-
-  fetch(encodeURI(url),getParam)
-  //.then(res => res.json())
-  .then(function(response) {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error("Network response was not ok");
-  })
-  .then(function(result) {
-    createMap(result)
-  })
-  .catch(function(error) {
-    console.log("There has been a problem with your fetch operation: ",error.message);
-  });
 }
 
 export function createMap(props){

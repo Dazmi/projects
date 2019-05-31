@@ -10,8 +10,8 @@ return (
 <div>
 	<div className="space"></div>
 	<div className="box">
-		
-		<div className="aboutflex">
+		<div className="pod">
+		<div className="homeflex">
 			<div>
 				{console.log(getCookie("email"))}
 				<h3>Filters</h3>
@@ -22,9 +22,10 @@ return (
 				Year: <Dropdown category={"years"} /><br />
 			</div>
 			<div>
-				<button onClick={getSearch}>Table</button>
-				<button onClick={getChart}>Chart</button>
+				<button onClick={getSearch}>Table</button><br />
+				<button onClick={getChart}>Chart</button><br />
 				<button onClick={getArea}>Map</button><br />
+			</div>
 			</div>
 		</div>
 		<div id='app'></div>

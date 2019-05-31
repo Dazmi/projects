@@ -1,9 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+export function Offences() {
+  getOffences('offences')
+  return (
+  <div>
+    <div className="space"></div>
+	  <div className="box">
+      <div className="pod">
+        <button onClick={() => getOffences('offences')}>Offences</button>
+        <button onClick={() => getOffences('areas')}>Areas</button>
+        <button onClick={() => getOffences('ages')}>Ages</button>
+        <button onClick={() => getOffences('genders')}>Genders</button>
+        <button onClick={() => getOffences('years')}>Years</button>
+        <div id='app'></div>
+      </div>
+    </div>
+  </div>
+  );
+}
 
-export function getOffences(props) {
-  const url = `https://cab230.hackhouse.sh/${props}`;
+function getOffences(props) {
+  const url = `http://localhost:3000/${props}`;
   console.log(url)
 
   fetch(url)
@@ -15,103 +33,128 @@ export function getOffences(props) {
     throw new Error("Network response was not ok");
   })
   .then(function(result) {
-    getTable(result)
+    if (props == 'offences'){
+      offences(result)
+    }
+    if (props == 'areas'){
+      areas(result)
+    }
+    if (props == 'ages'){
+      ages(result)
+    }
+    if (props == 'genders'){
+      genders(result)
+    }
+    if (props == 'years'){
+      years(result)
+    }
   })
   .catch(function(error) {
     console.log("There has been a problem with your fetch operation: ",error.message);
   });
 }
 
-function getTable(props){
+function offences(props){
 console.log(props)
 let table = null;
-if (props.name === "offences"){
 table = 
 <div>
   <h1>Offences</h1>
   <table className="app">
     <tbody>
-      {props.offences.map(headline => (
+      {props.offences.map(props => (
       <tr>
         <td>
-          {headline}
+          {props}
         </td>
       </tr>
       ))}
     </tbody>
   </table>
 </div>
+ReactDOM.render(table, document.getElementById("app"))
 }
-if (props.name === "areas"){
-table = 
-<div>
-  <h1>Area</h1>
-  <table className="app">
-    <tbody>
 
-      {props.areas.map(headline => (
-      <tr>
-        <td>
-          {headline}
-        </td>
-      </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+function areas(props){
+  console.log(props)
+  let table = null;
+  table = 
+  <div>
+    <h1>Areas</h1>
+    <table className="app">
+      <tbody>
+        {props.areas.map(props => (
+        <tr>
+          <td>
+            {props}
+          </td>
+        </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  ReactDOM.render(table, document.getElementById("app"))
 }
-if (props.name === "ages") {
-table = 
-<div>
-  <h1>Ages</h1>
-  <table className="app">
-    <tbody>
 
-      {props.ages.map(headline => (
-      <tr>
-        <td>
-          {headline}
-        </td>
-      </tr>
-
-      ))}
-    </tbody>
-  </table>
-</div>
+function ages(props){
+  console.log(props)
+  let table = null;
+  table = 
+  <div>
+    <h1>Ages</h1>
+    <table className="app">
+      <tbody>
+        {props.ages.map(props => (
+        <tr>
+          <td>
+            {props}
+          </td>
+        </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  ReactDOM.render(table, document.getElementById("app"))
 }
-if (props.name === "genders"){
+
+function genders(props){
+console.log(props)
+let table = null;
 table = 
 <div>
   <h1>Genders</h1>
   <table className="app">
     <tbody>
-      {props.genders.map(headline => (
+      {props.genders.map(props => (
       <tr>
         <td>
-          {headline}
+          {props}
         </td>
       </tr>
       ))}
     </tbody>
   </table>
 </div>
-}
-if (props.name === "years"){
-table = 
-<div>
-  <h1>Years</h1>
-  <table className="app">
-    <tbody>
-      {props.years.map(headline => (
-      <tr>
-        <td>
-          {headline}
-        </td>
-      </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-}
 ReactDOM.render(table, document.getElementById("app"))
+}
+
+function years(props){
+  console.log(props)
+  let table = null;
+  table = 
+  <div>
+    <h1>Years</h1>
+    <table className="app">
+      <tbody>
+        {props.years.map(props => (
+        <tr>
+          <td>
+            {props}
+          </td>
+        </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  ReactDOM.render(table, document.getElementById("app"))
 }

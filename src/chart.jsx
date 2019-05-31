@@ -5,24 +5,25 @@ import { getCookie }  from './nav.jsx'
 
 
 export function getChart(){
-  //The parameters of the call
+  // The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
   let age = document.getElementById("age")
   let gender = document.getElementById("gender")
   let year = document.getElementById("year")
+  // Dropdown option
   let offenceOption = offence.options[offence.selectedIndex].value
   let areaOption = area.options[area.selectedIndex].value
   let ageOption = age.options[age.selectedIndex].value
   let genderOption = gender.options[gender.selectedIndex].value
   let yearOption = year.options[year.selectedIndex].value
-
+  // Search Params
   let getParam = { method: "GET" };
   let head = { Authorization: `Bearer ${getCookie("JWT")}` };
   getParam.headers = head;
 
-  //The URL
-  let baseUrl = "https://cab230.hackhouse.sh/search?";
+  // The URL
+  let baseUrl = "http://localhost:3000/search?";
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -41,7 +42,6 @@ export function getChart(){
   }
   console.log(url)
   fetch(encodeURI(url),getParam)
-    //.then(res => res.json())
     .then(function(response) {
       if (response.ok) {
         return response.json();
@@ -55,9 +55,6 @@ export function getChart(){
       console.log("There has been a problem with your fetch operation: ",error.message);
     });
 }
-
-
-
 
 export async function barChart(props) {
 
@@ -95,10 +92,12 @@ export async function barChart(props) {
 }
 
 async function getTotal(props){
+  
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
   let age = document.getElementById("age")
   let gender = document.getElementById("gender")
+
   let offenceOption = offence.options[offence.selectedIndex].value
   let areaOption = area.options[area.selectedIndex].value
   let ageOption = age.options[age.selectedIndex].value
@@ -145,8 +144,6 @@ export function lineChart(props) {
 
   console.log(totalData)
 }
-
-
 
 function useLineChart(props){
 console.log(props.result[0].total)

@@ -16,6 +16,9 @@ return (
     <li>
       <Link to="/login">Login</Link>
     </li>
+    <li>
+      <Link to="/offences">Offences</Link>
+    </li>
   </ul>
 </nav>
 
@@ -56,4 +59,17 @@ export function getCookie(cname) {
     }
   }
   return "";
+}
+
+export function validation(x, y) {
+  if (!/[@]/.test(x)) {
+    let appDiv = document.getElementById("app");
+    appDiv.innerHTML = "Error: Provide an email address";
+    return true;
+  }
+  if (!/[0-9]/.test(y)) {
+    let appDiv = document.getElementById("app");
+    appDiv.innerHTML = "Error: Password contain a number";
+    return true;
+  }
 }

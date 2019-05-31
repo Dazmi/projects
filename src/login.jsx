@@ -25,13 +25,9 @@ function logButton() {
 
   let emailForm = document.getElementById("email").value;
   let passForm = document.getElementById("pass").value;
-  let body = "email=" + emailForm + "&password=" + passForm
+  let body = `email=${emailForm}&password=${passForm}`
 
-  if (validation(emailForm, passForm)) {
-    return;
-  }
-
-  fetch("https://cab230.hackhouse.sh/login", {
+  fetch("http://localhost:3000/login", {
       method: "POST",
       body: body,
       headers: {
@@ -58,18 +54,4 @@ function logButton() {
     });
 
 
-}
-
-
-function validation(x, y) {
-  if (!/[@]/.test(x)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Provide an email address";
-    return true;
-  }
-  if (!/[0-9]/.test(y)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Password contain a number";
-    return true;
-  }
 }

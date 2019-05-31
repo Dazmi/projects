@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 
 
 function getHeadlines(props) {
-  let url = `https://cab230.hackhouse.sh/${props}`;
+  let url = `http://localhost:3000/${props}`;
   return fetch(url)
     .then(res => res.json())
 }

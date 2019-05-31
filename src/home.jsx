@@ -15,11 +15,12 @@ return (
       <h1>Crime</h1>
       <p>Browse through a database of Queenslands offences</p>
       <p>Click to preview categories of offences</p>
-      <Link to="/offences"><button>View</button></Link>
-
+      <Link to="/offences"><button>View Offences</button></Link>
     </div>
 
   </div>
+  <footer></footer>
 </div>
+
 );
 }

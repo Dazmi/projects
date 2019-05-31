@@ -25,11 +25,9 @@ return (
 function regButton() {
   let emailForm = document.getElementById("email").value;
   let passForm = document.getElementById("pass").value;
-  let body = "email=" + emailForm + "&password=" + passForm;
-  if (validation(emailForm, passForm)) {
-    return;
-  }
-  fetch("https://cab230.hackhouse.sh/register", {
+  let body = `email=${emailForm}&password=${passForm}`
+
+  fetch("http://localhost:3000/register", {
       method: "POST",
       body: body,
       headers: {

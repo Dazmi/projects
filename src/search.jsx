@@ -3,12 +3,14 @@ import ReactDOM from "react-dom";
 import { getCookie } from './nav.jsx'
 
 export function getSearch(){
+
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
   let age = document.getElementById("age")
   let gender = document.getElementById("gender")
   let year = document.getElementById("year")
+
   let offenceOption = offence.options[offence.selectedIndex].value
   let areaOption = area.options[area.selectedIndex].value
   let ageOption = age.options[age.selectedIndex].value
@@ -20,7 +22,7 @@ export function getSearch(){
   getParam.headers = head;
 
   //The URL
-  let baseUrl = "https://cab230.hackhouse.sh/search?";
+  let baseUrl = "http://localhost:3000/search?";
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -47,6 +49,7 @@ export function getSearch(){
       throw new Error("Network response was not ok");
     })
     .then(function(result) {
+      console.log(result)
       GetTable(result)
     })
     .catch(function(error) {
