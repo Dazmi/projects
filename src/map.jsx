@@ -1,32 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { getCookie } from "./nav.jsx"
+import { getCookie, URL } from "./index"
 import {
     withGoogleMap,
     GoogleMap,
     Marker,
   } from "react-google-maps";
-  
-  // Emply list with objects location lats, lng
 
-export function getArea(){
+/**
+ * Create a map with filters
+ */
+export function getMap(){
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
   let age = document.getElementById("age")
   let gender = document.getElementById("gender")
   let year = document.getElementById("year")
+  // Grab options from dropdown
   let offenceOption = offence.options[offence.selectedIndex].value
   let areaOption = area.options[area.selectedIndex].value
   let ageOption = age.options[age.selectedIndex].value
   let genderOption = gender.options[gender.selectedIndex].value
   let yearOption = year.options[year.selectedIndex].value
+  // Parameters for search request
   let getParam = { method: "GET" };
   let head = { Authorization: `Bearer ${getCookie("JWT")}` };
   getParam.headers = head;
-
   //The URL
-  let baseUrl = "http://localhost:3000/search?";
+  let baseUrl = `${URL}/search?`;
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -45,7 +47,6 @@ export function getArea(){
   }
   console.log(url)
   fetch(encodeURI(url),getParam)
-    //.then(res => res.json())
     .then(function(response) {
       if (response.ok) {
         return response.json();
@@ -60,7 +61,10 @@ export function getArea(){
     });
     
 }
-
+/**
+ * Create map with markers
+ * @param {results} props 
+ */
 export function createMap(props){
   let marker = [];
   

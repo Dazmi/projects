@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-export default function home() {
+
+/**
+ * Home page
+ */
+export function Home() {
 return (
 <div>
-  <div className="bluebg banner">
-    <h1>Welcome</h1>
+  <div className="bluebg banner white">
+    <h1>Welcome to crimes with CAB230</h1>
     <p>Click to register</p>
     <Link to="/register"><button>Register</button></Link>
 

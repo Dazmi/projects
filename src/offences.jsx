@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
+import { URL } from './index'
+/**
+ * View offences table
+ */
 export function Offences() {
   getOffences('offences')
   return (
@@ -20,8 +23,12 @@ export function Offences() {
   );
 }
 
+/**
+ * Creates tables
+ * @param {category} props 
+ */
 function getOffences(props) {
-  const url = `http://localhost:3000/${props}`;
+  const url = `${URL}/${props}`;
   console.log(url)
 
   fetch(url)
@@ -33,19 +40,19 @@ function getOffences(props) {
     throw new Error("Network response was not ok");
   })
   .then(function(result) {
-    if (props == 'offences'){
+    if (props === 'offences'){
       offences(result)
     }
-    if (props == 'areas'){
+    if (props === 'areas'){
       areas(result)
     }
-    if (props == 'ages'){
+    if (props === 'ages'){
       ages(result)
     }
-    if (props == 'genders'){
+    if (props === 'genders'){
       genders(result)
     }
-    if (props == 'years'){
+    if (props === 'years'){
       years(result)
     }
   })

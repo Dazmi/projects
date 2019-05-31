@@ -1,19 +1,25 @@
 import React, { useState, useEffect} from "react";
-
-
-function getHeadlines(props) {
-  let url = `http://localhost:3000/${props}`;
+import { URL } from './index'
+/**
+ * Gets the list of categories
+ * @param {offence} props 
+ */
+function getOffence(props) {
+  let url = `${URL}/${props}`;
   return fetch(url)
     .then(res => res.json())
 }
-
+/**
+ * Create the loading effect before content is loaded
+ * @param {offence} props 
+ */
 function useNewsArticles(props) {
   let [loading, setLoading] = useState(true);
   let [headlines, setHeadlines] = useState([]);
   let [error, setError] = useState(null);
 
   useEffect(() => {
-    getHeadlines(props)
+    getOffence(props)
       .then(headlines => {
         setHeadlines(headlines);
         setLoading(false);
@@ -30,7 +36,10 @@ function useNewsArticles(props) {
     error
   };
 }
-
+/**
+ * Returns the dropdowns
+ * @param {offence} props 
+ */
 export function Dropdown(props) {
 let { loading, headlines, error } = useNewsArticles(props.category);
 if (loading === true) {

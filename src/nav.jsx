@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import logo from './img/jdotw.png';
 
+/**
+ * Navigation bar
+ */
 export function Nav() {
+// when user has cookies the navigation bar changes
 if (!document.cookie) {
 return (
 <nav>
@@ -21,10 +25,9 @@ return (
     </li>
   </ul>
 </nav>
-
 );
 }
- 
+
 else {
   return (
   <nav>
@@ -35,7 +38,10 @@ else {
       <Link to="/logout">Logout</Link>
     </li>
     <li>
-      <Link to="/dashboard">Dashboard</Link>
+      <Link to="/dashboard">Search</Link>
+    </li>
+    <li>
+      <Link to="/offences">Offences</Link>
     </li>
     <li className="gap"></li>
   </ul>
@@ -45,31 +51,3 @@ else {
 }
 }
 
-
-export function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
-export function validation(x, y) {
-  if (!/[@]/.test(x)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Provide an email address";
-    return true;
-  }
-  if (!/[0-9]/.test(y)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Password contain a number";
-    return true;
-  }
-}

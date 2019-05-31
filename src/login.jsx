@@ -1,8 +1,10 @@
 import React from 'react';
-
-export default function login(){
+import { URL } from './index'
+/**
+ * Login page
+ */
+export function Login(){
 return (
-
 <div>
   <div className="space"></div>
   <div className="box center">
@@ -20,14 +22,15 @@ return (
 );
 }
 
-
+/**
+ * Request the server for login
+ */
 function logButton() {
-
+  // get items from form
   let emailForm = document.getElementById("email").value;
   let passForm = document.getElementById("pass").value;
   let body = `email=${emailForm}&password=${passForm}`
-
-  fetch("http://localhost:3000/login", {
+  fetch(`${URL}/login`, {
       method: "POST",
       body: body,
       headers: {
@@ -44,10 +47,9 @@ function logButton() {
       let appDiv = document.getElementById("app");
       appDiv.innerHTML = JSON.stringify(result);
       document.cookie = `JWT=${result.token}`
-      document.cookie = `email=${emailForm}`
+      document.cookie = `email=${emailForm}` 
 
-      document.location.href = "/dashboard"
-
+      document.location.href = "/dashboard" // redirect to the dashboard
     })
     .catch(function (error) {
       console.log("There has been a problem with your fetch operation: ", error.message);

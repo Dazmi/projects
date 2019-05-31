@@ -1,19 +1,22 @@
 import React from "react";
-import { Dropdown } from "./dropdown.jsx"
-import { getSearch } from "./search.jsx"
-import { getChart } from "./chart.jsx"
-import { getArea } from "./map.jsx"
-import { getCookie } from "./nav.jsx"
+import { Dropdown } from "./dropdown"
+import { getSearch } from "./search"
+import { getChart } from "./chart"
+import { getMap } from "./map"
+import { getCookie } from "./index"
 
-export default function home() {
+/**
+ * Dashboard for loged in users
+ */
+export function Dashboard() {
 return (
 <div>
 	<div className="space"></div>
 	<div className="box">
 		<div className="pod">
+		<h1>Welcome, {getCookie("email")}</h1>
 		<div className="homeflex">
 			<div>
-				{console.log(getCookie("email"))}
 				<h3>Filters</h3>
 				Offence: <Dropdown category={"offences"} /><br />
 				Areas: <Dropdown category={"areas"} /><br />
@@ -24,7 +27,7 @@ return (
 			<div>
 				<button onClick={getSearch}>Table</button><br />
 				<button onClick={getChart}>Chart</button><br />
-				<button onClick={getArea}>Map</button><br />
+				<button onClick={getMap}>Map</button><br />
 			</div>
 			</div>
 		</div>

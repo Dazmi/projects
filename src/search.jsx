@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { getCookie } from './nav.jsx'
+import { getCookie, URL} from './index'
 
 export function getSearch(){
-
   //The parameters of the call
   let offence = document.getElementById("offence")
   let area = document.getElementById("area")
@@ -22,7 +21,7 @@ export function getSearch(){
   getParam.headers = head;
 
   //The URL
-  let baseUrl = "http://localhost:3000/search?";
+  let baseUrl = `${URL}/search?`;
   let url = baseUrl
   if (offenceOption !== 'Select'){
     url = url + `offence=${offenceOption}`
@@ -87,12 +86,4 @@ function GetTable(props){
     </table>
   </div>
   ReactDOM.render(table, document.getElementById("app"))
-}
-
-function valSearch(param){
-  if (param == null){
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Must login";
-    return true;
-  }
 }

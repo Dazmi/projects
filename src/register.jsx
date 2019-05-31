@@ -1,6 +1,9 @@
 import React from 'react';
-
-export default function register() {
+import { URL } from './index'
+/**
+ * Registration page
+ */
+export function Register() {
 return (
 <div>
   <div className="space"></div>
@@ -14,20 +17,20 @@ return (
       <button onClick={regButton}>Register</button>
     </div>
   </div>
-
   <div id="app"></div>
 </div>
-
 );
 }
 
-
+/**
+ * Request the server for registration
+ */
 function regButton() {
   let emailForm = document.getElementById("email").value;
   let passForm = document.getElementById("pass").value;
   let body = `email=${emailForm}&password=${passForm}`
 
-  fetch("http://localhost:3000/register", {
+  fetch(`${URL}/register`, {
       method: "POST",
       body: body,
       headers: {
@@ -47,7 +50,7 @@ function regButton() {
     })
 
     .then(function (result) {
-      fetch("https://cab230.hackhouse.sh/login", {
+      fetch(`${URL}/login`, {
           method: "POST",
           body: body,
           headers: {
@@ -82,18 +85,4 @@ function regButton() {
       console.log("There has been a problem with your fetch operation: ", error.message);
     });
 
-}
-
-
-function validation(x, y) {
-  if (!/[@]/.test(x)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Provide an email address";
-    return true;
-  }
-  if (!/[0-9]/.test(y)) {
-    let appDiv = document.getElementById("app");
-    appDiv.innerHTML = "Error: Password contain a number";
-    return true;
-  }
 }
