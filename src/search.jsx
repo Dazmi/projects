@@ -57,6 +57,10 @@ export function getSearch(){
     
 }
 
+/**
+ * Create Table
+ * @param {offence} props 
+ */
 function GetTable(props){
     let table = <div>
     <h1>{props.query.offence}</h1>

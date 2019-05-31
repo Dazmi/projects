@@ -61,6 +61,10 @@ function getOffences(props) {
   });
 }
 
+/**
+ * Create the table
+ * @param {category} props 
+ */
 function offences(props){
 console.log(props)
 let table = null;
