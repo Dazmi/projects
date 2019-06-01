@@ -15,9 +15,9 @@ return (
       Password:<br></br>
       <input type="password" name="password" id="pass"></input><br></br>
       <button onClick={regButton}>Register</button>
+      <div id="app"></div>
     </div>
   </div>
-  <div id="app"></div>
 </div>
 );
 }
@@ -45,7 +45,7 @@ function regButton() {
     })
     .then(function (result) {
       let appDiv = document.getElementById("app");
-      appDiv.innerHTML = JSON.stringify(result);
+      appDiv.innerHTML = "Registration Successful";
       regButton.disabled = true;
     })
 
@@ -64,15 +64,10 @@ function regButton() {
           throw new Error("Network response was not ok.");
         })
         .then(function (result) {
-          let appDiv = document.getElementById("app");
-          appDiv.innerHTML = JSON.stringify(result);
           document.cookie = `JWT=${result.token}`
           document.cookie = `email=${emailForm}`
-
           document.location.href = "/dashboard"
-
         })
-
         .catch(function (error) {
           console.log("There has been a problem with your fetch operation: ", error.message);
         });

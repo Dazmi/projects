@@ -1,44 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { getCookie, URL} from './index'
+import { getCookie, getSearch} from './index'
+import { sortTable, sortInt } from './sort'
 
-export function getSearch(){
-  //The parameters of the call
-  let offence = document.getElementById("offence")
-  let area = document.getElementById("area")
-  let age = document.getElementById("age")
-  let gender = document.getElementById("gender")
-  let year = document.getElementById("year")
+export function getTable() {
+  // Use search function to filter options
+  let url = getSearch()
 
-  let offenceOption = offence.options[offence.selectedIndex].value
-  let areaOption = area.options[area.selectedIndex].value
-  let ageOption = age.options[age.selectedIndex].value
-  let genderOption = gender.options[gender.selectedIndex].value
-  let yearOption = year.options[year.selectedIndex].value
-  
+  // Authentication parameters
   let getParam = { method: "GET" };
   let head = { Authorization: `Bearer ${getCookie("JWT")}` };
   getParam.headers = head;
 
-  //The URL
-  let baseUrl = `${URL}/search?`;
-  let url = baseUrl
-  if (offenceOption !== 'Select'){
-    url = url + `offence=${offenceOption}`
-  }
-  if (areaOption !== 'Select'){
-    url = url + `&area=${areaOption}`;
-  }
-  if (ageOption !== 'Select'){
-    url = url + `&age=${ageOption}`;
-  }
-  if (genderOption !== 'Select'){
-    url = url + `&gender=${genderOption}`;
-  }
-  if (yearOption !== 'Select'){
-    url = url + `&year=${yearOption}`;
-  }
-  console.log(url)
+  // Fetch operation
   fetch(encodeURI(url),getParam)
     //.then(res => res.json())
     .then(function(response) {
@@ -48,8 +22,7 @@ export function getSearch(){
       throw new Error("Network response was not ok");
     })
     .then(function(result) {
-      console.log(result)
-      GetTable(result)
+      useTable(result)
     })
     .catch(function(error) {
       console.log("There has been a problem with your fetch operation: ",error.message);
@@ -61,31 +34,27 @@ export function getSearch(){
  * Create Table
  * @param {offence} props 
  */
-function GetTable(props){
-    let table = <div>
+function useTable(props){
+  let table = <div>
     <h1>{props.query.offence}</h1>
-    <table className="table">
-    <tbody>
-      <tr>
-        <th>
-          Area
-        </th>
-        <th>
-          Total
-        </th>
-      </tr>
-    {props.result.map(function(props) {
-      if (props.total !== 0){
-        return <tr>
-        <td>
-          {props.LGA}
-        </td>
-        <td>
-          {props.total}
-        </td>
-      </tr>
-      }})}
-
+    <table id="table">
+      <tbody>
+        <tr>
+          <th onClick={()=> sortTable(0)}>Area</th>
+          <th onClick={()=> sortInt(1)}>Total</th>
+        </tr>
+        {props.result.map(function(props) {
+          if (props.total !== 0){
+          return <tr>
+            <td>
+              {props.LGA}
+            </td>
+            <td>
+              {props.total}
+            </td>
+          </tr>
+          }})
+        }
       </tbody>
     </table>
   </div>

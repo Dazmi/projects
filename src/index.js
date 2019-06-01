@@ -34,6 +34,7 @@ ReactDOM.render(<Main />, document.getElementById('root'));
 
 /**
  * Gets contents of cookies
+ * Source: https://www.w3schools.com/js/js_cookies.asp
  * @param {objectName} cname 
  */
 export function getCookie(cname) {
@@ -76,5 +77,50 @@ function Logout(){
   document.cookie = "JWT=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie = "undefined=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.location.href = "/"
+  document.location.href = "/" // redirects to homepage
+}
+
+export function getSearch(){
+  // Loading effect
+  ReactDOM.render(<h2>Loading...</h2>, document.getElementById("app"))
+
+  //The parameters of the call
+  let offence = document.getElementById("offence")
+  let area = document.getElementById("area")
+  let age = document.getElementById("age")
+  let gender = document.getElementById("gender")
+  let year = document.getElementById("year")
+  let month = document.getElementById("month")
+
+  // Select options from dropdown
+  let offenceOption = offence.options[offence.selectedIndex].value
+  offenceOption = offenceOption.replace("&", "");
+  let areaOption = area.options[area.selectedIndex].value
+  let ageOption = age.options[age.selectedIndex].value
+  let genderOption = gender.options[gender.selectedIndex].value
+  let yearOption = year.options[year.selectedIndex].value
+  let monthOption = month.options[month.selectedIndex].value
+
+  //The query
+  let url = `${URL}/search?`;
+  if (offenceOption !== 'Select'){ // Add offence filter
+    url = url + `offence=${offenceOption}`
+  }
+  if (areaOption !== 'Select'){ // Add area filter
+    url = url + `&area=${areaOption}`;
+  }
+  if (ageOption !== 'Select'){ // Add age filter
+    url = url + `&age=${ageOption}`;
+  }
+  if (genderOption !== 'Select'){ // Add gender filter
+    url = url + `&gender=${genderOption}`;
+  }
+  if (yearOption !== 'Select'){ // Add year filter
+    url = url + `&year=${yearOption}`;
+  }
+  if (monthOption !== 'Select'){ // Add month filter
+    url = url + `&month=${monthOption}`;
+  }
+  console.log(url)
+  return url
 }

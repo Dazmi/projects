@@ -1,16 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { URL } from './index'
+import { sortTable, sortInt } from './sort'
 /**
  * View offences table
  */
 export function Offences() {
-  getOffences('offences')
   return (
   <div>
     <div className="space"></div>
 	  <div className="box">
       <div className="pod">
+        <h1>Categories</h1>
         <button onClick={() => getOffences('offences')}>Offences</button>
         <button onClick={() => getOffences('areas')}>Areas</button>
         <button onClick={() => getOffences('ages')}>Ages</button>
@@ -28,17 +29,18 @@ export function Offences() {
  * @param {category} props 
  */
 function getOffences(props) {
+  ReactDOM.render(<h2>Loading...</h2>, document.getElementById("app"))
   const url = `${URL}/${props}`;
   console.log(url)
 
   fetch(url)
-  //.then(res => res.json())
   .then(function(response) {
     if (response.ok) {
       return response.json();
     }
     throw new Error("Network response was not ok");
   })
+  // switch for different categories
   .then(function(result) {
     if (props === 'offences'){
       offences(result)
@@ -66,13 +68,16 @@ function getOffences(props) {
  * @param {category} props 
  */
 function offences(props){
-console.log(props)
 let table = null;
+// Create offence table
 table = 
 <div>
   <h1>Offences</h1>
-  <table className="app">
+  <table id="table">
     <tbody>
+    <tr>
+        <th onClick={() => sortTable(0)}>Offences</th>
+      </tr>
       {props.offences.map(props => (
       <tr>
         <td>
@@ -85,15 +90,17 @@ table =
 </div>
 ReactDOM.render(table, document.getElementById("app"))
 }
-
+// Create areas table
 function areas(props){
-  console.log(props)
   let table = null;
   table = 
   <div>
     <h1>Areas</h1>
-    <table className="app">
+    <table id="table">
       <tbody>
+      <tr>
+        <th onClick={() => sortTable(0)}>Areas</th>
+      </tr>
         {props.areas.map(props => (
         <tr>
           <td>
@@ -106,15 +113,17 @@ function areas(props){
   </div>
   ReactDOM.render(table, document.getElementById("app"))
 }
-
+// Create ages table
 function ages(props){
-  console.log(props)
   let table = null;
   table = 
   <div>
     <h1>Ages</h1>
-    <table className="app">
+    <table id="table">
       <tbody>
+      <tr>
+        <th onClick={() => sortTable(0)}>Ages</th>
+      </tr>
         {props.ages.map(props => (
         <tr>
           <td>
@@ -127,15 +136,17 @@ function ages(props){
   </div>
   ReactDOM.render(table, document.getElementById("app"))
 }
-
+// Create gender table
 function genders(props){
-console.log(props)
 let table = null;
 table = 
 <div>
   <h1>Genders</h1>
-  <table className="app">
+  <table id="table">
     <tbody>
+    <tr>
+        <th onClick={() => sortTable(0)}>Genders</th>
+      </tr>
       {props.genders.map(props => (
       <tr>
         <td>
@@ -148,15 +159,17 @@ table =
 </div>
 ReactDOM.render(table, document.getElementById("app"))
 }
-
+// Create years table
 function years(props){
-  console.log(props)
   let table = null;
   table = 
   <div>
     <h1>Years</h1>
-    <table className="app">
+    <table id="table">
       <tbody>
+      <tr>
+        <th onClick={() => sortInt(0)}>Years</th>
+      </tr>
         {props.years.map(props => (
         <tr>
           <td>

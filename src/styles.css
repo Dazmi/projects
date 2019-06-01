@@ -265,6 +265,15 @@ li button {
   background-blend-mode: overlay;
 }
 
+.darkbg {
+  background-image: url("img/dark.jpg");
+  background-color:  #383838;
+  background-blend-mode: overlay;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 /* table */
 table {
   font-family: arial, sans-serif;

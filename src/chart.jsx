@@ -1,49 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Chart from 'chart.js';
-import { getCookie }  from './index'
-import { URL } from './index'
+import { getCookie, getSearch }  from './index'
 
 /**
  * Get elements from the search for the chart
  */
 export function getChart(){
-  // The parameters of the call
-  let offence = document.getElementById("offence")
-  let area = document.getElementById("area")
-  let age = document.getElementById("age")
-  let gender = document.getElementById("gender")
-  let year = document.getElementById("year")
-  // Dropdown option
-  let offenceOption = offence.options[offence.selectedIndex].value
-  let areaOption = area.options[area.selectedIndex].value
-  let ageOption = age.options[age.selectedIndex].value
-  let genderOption = gender.options[gender.selectedIndex].value
-  let yearOption = year.options[year.selectedIndex].value
-  // Search Params
+  // Use search function to filter options
+  let url = getSearch()
+
+  // Authentication parameters
   let getParam = { method: "GET" };
   let head = { Authorization: `Bearer ${getCookie("JWT")}` };
   getParam.headers = head;
 
-  // The URL
-  let baseUrl = `${URL}/search?`;
-  let url = baseUrl
-  if (offenceOption !== 'Select'){
-    url = url + `offence=${offenceOption}`
-  }
-  if (areaOption !== 'Select'){
-    url = url + `&area=${areaOption}`;
-  }
-  if (ageOption !== 'Select'){
-    url = url + `&age=${ageOption}`;
-  }
-  if (genderOption !== 'Select'){
-    url = url + `&gender=${genderOption}`;
-  }
-  if (yearOption !== 'Select'){
-    url = url + `&year=${yearOption}`;
-  }
-  console.log(url)
+  // Fetch operation
   fetch(encodeURI(url),getParam)
     .then(function(response) {
       if (response.ok) {
