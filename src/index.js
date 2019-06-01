@@ -10,9 +10,11 @@ import { Login } from "./login"
 import { Dashboard } from "./dashboard"
 import { Offences } from "./offences"
 
-export const URL = 'http://localhost:3000'
+export const URL = 'https://cab230.hackhouse.sh'
 
 /**
+ * Created by Jayden Dao - n10003665
+ * 
  * Main function which shows navigation
  */
 function Main() {

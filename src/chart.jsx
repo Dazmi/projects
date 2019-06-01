@@ -83,7 +83,8 @@ export async function barChart(props) {
 			labels: lgaData,
 			datasets: [{
 				label: '# Crimes',
-				data: totalData,
+        data: totalData,
+        backgroundColor: 'rgba(54, 162, 235, 0.4)', 
 				borderWidth: 1
 			}]
 		},

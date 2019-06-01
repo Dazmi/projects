@@ -15,7 +15,7 @@ return (
 	<div className="box">
 		<div className="pod">
 		<h1>Welcome, {getCookie("email")}</h1>
-		<div className="homeflex">
+		<div>
 			<div>
 				<h3>Filters</h3>
 				Offence: <Dropdown category={"offences"} /><br />
@@ -25,13 +25,13 @@ return (
 				Year: <Dropdown category={"years"} /><br />
 			</div>
 			<div>
-				<button onClick={getSearch}>Table</button><br />
-				<button onClick={getChart}>Chart</button><br />
+				<button onClick={getSearch}>Table</button>
+				<button onClick={getChart}>Chart</button>
 				<button onClick={getMap}>Map</button><br />
 			</div>
 			</div>
-		</div>
 		<div id='app'></div>
+		</div>
 	</div>
 </div>
 );

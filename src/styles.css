@@ -152,13 +152,19 @@ footer {
   background-color: rgb(162, 163, 74);
 }
 
+br {
+  display: block;
+  margin: 5px 0;
+  line-height:10px;
+  content: " ";
+}
 
 /*button*/
 button {
   background-color: #222;
   border: none;
   color: white;
-  padding: 10px 15px;
+  padding: 15px 20px;
   text-align: center;
   text-decoration: aqua;
   display: inline-block;
@@ -255,7 +261,7 @@ li button {
 
 .bluebg {
   background-image: url("img/blue.jpg");
-  background-color:  #2e3241;
+  background-color:  #252b2b;
   background-blend-mode: overlay;
 }
 
