@@ -52,6 +52,8 @@ function logButton() {
     document.location.href = "/dashboard" // redirect to the dashboard
   })
   .catch(function (error) {
+    let appDiv = document.getElementById("app");
+    appDiv.innerHTML = error;
     console.log("There has been a problem with your fetch operation: ", error.message);
   });
 }
