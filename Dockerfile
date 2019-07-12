@@ -10,7 +10,7 @@ COPY . .
 # Install production dependencies.
 RUN apt-get update && apt-get upgrade && apt-get install -y \
     python3 \
-    python3-pip \
+    python3-pip
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirments.txt
 
