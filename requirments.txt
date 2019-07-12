@@ -1,0 +1,6 @@
+pandas_datareader
+matplotlib
+yahoo_fin
+flask
+psutil
+flask_cors
