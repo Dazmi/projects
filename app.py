@@ -12,6 +12,7 @@ from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 import time
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -185,7 +186,11 @@ def update_corr():
     df_corr.to_csv('corr.csv')
     return jsonify({'message':'Complete'})
 
-    
+
+@app.route('/')
+def hello_world():
+    target = os.environ.get('TARGET', 'World')
+    return 'Hello {}!\n'.format(target)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
