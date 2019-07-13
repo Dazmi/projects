@@ -21,6 +21,10 @@ asx200 = pd.read_csv('20190701-asx200.csv',  header=1)
 corr = pd.read_csv('corr.csv',  header=0, index_col=0)
 latest = pd.read_csv('latest_data.csv',  header=0, index_col=0)
 
+dirName = 'data'
+if not os.path.exists(dirName):
+    os.mkdir(dirName)
+
 @app.route("/monitor")
 def monitor():
         last_bytes_sent = 0
@@ -58,7 +62,10 @@ def stats():
     ticker = request.args['ticker']
     ticker = ticker.upper()
     timeframe = request.args['timeframe']
-    df = web.DataReader(f'{ticker}.ax', 'yahoo')
+    try:
+        df = pd.read_csv(f'data/{ticker}.csv',  header=0, index_col=0)
+    except:
+        df = web.DataReader(f'{ticker}.ax', 'yahoo')
     df = df.reset_index()
     days = 0
     if timeframe == 'week':
@@ -72,14 +79,13 @@ def stats():
     elif timeframe == 'max':
         days = 1825
 
-    #main_df = main_df.round({'Adj Close': 3, 'price_change': 3, 'pc_change': 2})
     df = df.round({'Adj Close': 3, 'Volume': 0})
     X_data = df['Date'].dt.strftime('%d/%m/%Y')
     X_data = X_data.tail(days).tolist()
     Y_data = df['Adj Close'].tail(days)
     Y_data = Y_data.tolist()
     volume = df['Volume'].tail(days).tolist()
-    #asxlist = pd.read_csv('ASXListedCompanies.csv',  header=1, index_col=1)
+
     asxindex = asxlist.set_index('ASX code')
     company = asxindex.loc[ticker,:]
 
@@ -110,11 +116,10 @@ def stats():
 
 
 def get_data(ticker):
-    try:
-        print(ticker)
-        df = web.DataReader(f'{ticker}.ax', 'yahoo')
-        df.to_csv(f'data/{ticker}.csv')
-    except Exception as e: print(e)
+    print(ticker)
+    df = web.DataReader(f'{ticker}.ax', 'yahoo')
+    df.to_csv(f'data/{ticker}.csv')
+
 
 @app.route("/update_data")
 def thread_get():
