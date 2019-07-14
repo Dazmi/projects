@@ -35,7 +35,7 @@ def monitor():
         memory_percent = psutil.virtual_memory().percent
         disk_percent = psutil.disk_usage('/').percent
         network_io = psutil.net_io_counters()
-        boottime = dt.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+        boottime = dt.datetime.fromtimestamp(psutil.boot_time()).strftime("%d/%m/%Y")
 
         if last_bytes_sent == 0:
             bytes_sent_delta = 0
@@ -67,25 +67,32 @@ def stats():
         df = pd.read_csv(f'data/{ticker}.csv',  header=0, index_col=0)
     except:
         df = web.DataReader(f'{ticker}.ax', 'yahoo')
+    
     df = df.reset_index()
-    days = 0
-    if timeframe == 'week':
-        days = 7
-    elif timeframe == 'month':
-        days = 30
-    elif timeframe == 'year':
-        days = 365
-    elif timeframe == '5years':
-        days = 1825
-    elif timeframe == 'max':
-        days = 1825
-
     df = df.round({'Adj Close': 3, 'Volume': 0})
-    X_data = df['Date']#.dt.strftime('%d/%m/%Y')
-    X_data = X_data.tail(days).tolist()
-    Y_data = df['Adj Close'].tail(days)
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        
+    starttime = []
+    if timeframe == 'week':
+        starttime = df['Date'].tail(1) - pd.DateOffset(weeks=1)
+    elif timeframe == 'month':
+        starttime = df['Date'].tail(1) - pd.DateOffset(months=1)
+    elif timeframe == '6_months':
+        starttime = df['Date'].tail(1) - pd.DateOffset(months=6)
+    elif timeframe == 'year':
+        starttime = df['Date'].tail(1) - pd.DateOffset(years=1)
+    elif timeframe == '5_years':
+        starttime = df['Date'].tail(1) - pd.DateOffset(years=5)
+    elif timeframe == 'max':
+        starttime = df['Date'].head(1)
+
+    data = df.loc[df.loc[:,'Date'].values > starttime.values,:]
+
+    X_data = data['Date'].dt.strftime('%d/%m/%Y')
+    X_data = X_data.tolist()
+    Y_data = data['Adj Close']
     Y_data = Y_data.tolist()
-    volume = df['Volume'].tail(days).tolist()
+    volume = data['Volume'].tolist()
 
     asxindex = asxlist.set_index('Code')
     company = asxindex.loc[ticker,:]
@@ -126,9 +133,9 @@ def update_corr(tickers):
             corr_df = corr_df.join(corr, how='outer')
             print(ticker)
         except Exception as e: print(e)
-    
-    corr_df.to_csv('joined_closes.csv')
     corr_df = corr_df.corr()
+    corr_df = corr_df.replace([np.inf, -np.inf], 0)
+    corr_df.fillna(0, inplace=True)
     corr_df.to_csv('corr.csv')
 
 def summary(results):
@@ -139,10 +146,10 @@ def summary(results):
     main_df = pd.merge(asxlist, main_df, on='Code')
     main_df = main_df.round({'Adj Close': 3, 'price_change': 3, 'pc_change': 2})
 
-    main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'buy'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'sell' 
-    main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'buy'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'sell'  
+    main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'BUY'  
+    main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'SELL' 
+    main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'BUY'  
+    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL'  
 
     main_df.set_index('Code', inplace=True)
     main_df.to_csv('all_latest.csv')
@@ -164,8 +171,12 @@ def latest_data(ticker):
 
 @app.route("/update")
 def thread_latest():
+    db = request.args['db']
 
-    tickers = asxlist['Code']
+    if (db == '200'):
+        tickers = asx200['Code']
+    if (db == 'asx'):
+        tickers = asxlist['Code']
 
     start = time.time()
     pool = ThreadPool(8)
@@ -178,6 +189,9 @@ def thread_latest():
 
     duration = time.time() - start
     return jsonify({'message':'Complete', 'time':duration})
+
+
+
 
 @app.route("/latest")
 def get_latest():
