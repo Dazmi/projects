@@ -103,10 +103,14 @@ def stats():
     pos = corr[ticker].tail(5).index.to_list()
     neg = corr[ticker].head(5).index.to_list()
 
-    pos_company = asxindex.loc[pos,:]
-    neg_company = asxindex.loc[neg,:]
+
+    pos_company = latest.loc[pos,:]
+    neg_company = latest.loc[neg,:]
 
     pred = latest.loc[ticker,['short_pred', 'long_pred']]
+    
+    pred.fillna("N/A", inplace=True)
+
 
     res = {
         'ticker':ticker,
@@ -117,25 +121,27 @@ def stats():
         'group':company['GICS industry group'],
         'pos':pos_company['Company name'].to_list(),
         'neg':neg_company['Company name'].to_list(),
+        'pc_pos':pos_company['pc_change'].to_list(),
+        'pc_neg':neg_company['pc_change'].to_list(),
         'short_pred':pred['short_pred'],
         'long_pred':pred['long_pred']
     }
     return jsonify(res)
 
 def latest_data(ticker):
-    #df = pd.read_csv(f'data/{ticker}.csv',  header=0)
     try:
         df = web.DataReader(f'{ticker}.ax', 'yahoo')
         df.to_csv(f'data/{ticker}.csv')
         df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
         df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
+        df['std'] = df['Adj Close'].std()
         df = df.tail(1)
         df['Code'] = ticker
-        print(ticker)
         return df
     except Exception as e: print(e)
 
 def update_corr(tickers):
+    print('updating correlation')
     corr_df = pd.DataFrame()
     for ticker in tickers:
         try:
@@ -144,19 +150,16 @@ def update_corr(tickers):
             corr.rename(columns={'pc_change': ticker}, inplace=True)
             corr.drop(['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'], 1, inplace=True)
             corr_df = corr_df.join(corr, how='outer')
-            print(ticker)
         except Exception as e: print(e)
 
-    corr_df = corr_df.replace([np.inf, -np.inf], 0)
-    corr_df.fillna(0, inplace=True)
+    corr_df = corr_df.bfill().ffill()
     corr_df.to_csv('closes_pc.csv')
-    corr_df = corr_df.tail(100)
+    corr_df = corr_df.tail(60)
     corr_df = corr_df.corr()
-    corr_df = corr_df.replace([np.inf, -np.inf], 0)
-    corr_df.fillna(0, inplace=True)
     corr_df.to_csv('corr.csv')
 
 def summary(results):
+    print('updating predictions')
     main_df = pd.DataFrame()
     main_df = main_df.append(results)
     main_df['price_change'] = main_df['Adj Close'] - main_df['Open']
@@ -167,7 +170,7 @@ def summary(results):
     main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'BUY'  
     main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'SELL' 
     main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'BUY'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL'  
+    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL' 
 
     main_df.set_index('Code', inplace=True)
     main_df.to_csv('all_latest.csv')
@@ -176,6 +179,8 @@ def summary(results):
 
 @app.route("/update")
 def thread_latest():
+    start = time.time()
+    print('updating...')
     db = request.args['db']
 
     if (db == '200'):
@@ -183,7 +188,7 @@ def thread_latest():
     if (db == 'asx'):
         tickers = asxlist['Code']
 
-    start = time.time()
+    print('fetching data')
     pool = ThreadPool(8)
     results = pool.map(latest_data, tickers)
     pool.close()
@@ -193,7 +198,9 @@ def thread_latest():
     update_corr(tickers)
 
     duration = time.time() - start
-    return jsonify({'message':'Complete', 'time':duration})
+    message = {'message':'Complete', 'time':duration }
+    print(message)
+    return jsonify(message)
 
 
 @app.route("/latest")
