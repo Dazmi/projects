@@ -3,9 +3,6 @@ import pandas_datareader.data as web
 import pandas as pd
 import numpy as np
 import datetime as dt
-import matplotlib.pyplot as plt
-from matplotlib import style
-from yahoo_fin import stock_info as si
 import json
 import psutil
 from multiprocessing import Pool
@@ -19,12 +16,14 @@ CORS(app)
 asxlist = pd.read_csv('ASXListedCompanies.csv',  header=1)
 asxlist.rename(columns={'ASX code': 'Code'}, inplace=True)
 asx200 = pd.read_csv('20190701-asx200.csv',  header=1)
-corr = pd.read_csv('corr.csv',  header=0, index_col=0)
-latest = pd.read_csv('latest_data.csv',  header=0, index_col=0)
 
 dirName = 'data'
 if not os.path.exists(dirName):
     os.mkdir(dirName)
+
+dirr = 'saves'
+if not os.path.exists(dirr):
+    os.mkdir(dirr)
 
 @app.route("/monitor")
 def monitor():
@@ -97,18 +96,17 @@ def stats():
     asxindex = asxlist.set_index('Code')
     company = asxindex.loc[ticker,:]
 
-    corr = pd.read_csv('corr.csv',  header=0, index_col=0)
+    corr = pd.read_csv('saves/corr.csv',  header=0, index_col=0)
     corr.sort_values(by=[ticker], axis=0, inplace=True, ascending=True)
     corr.drop(ticker, inplace=True)
     pos = corr[ticker].tail(5).index.to_list()
     neg = corr[ticker].head(5).index.to_list()
 
-
+    latest = pd.read_csv('saves/latest_data.csv',  header=0, index_col=0)
     pos_company = latest.loc[pos,:]
     neg_company = latest.loc[neg,:]
 
     pred = latest.loc[ticker,['short_pred', 'long_pred']]
-    
     pred.fillna("N/A", inplace=True)
 
 
@@ -153,10 +151,10 @@ def update_corr(tickers):
         except Exception as e: print(e)
 
     corr_df = corr_df.bfill().ffill()
-    corr_df.to_csv('closes_pc.csv')
+    #corr_df.to_csv('saves/closes_pc.csv')
     corr_df = corr_df.tail(60)
     corr_df = corr_df.corr()
-    corr_df.to_csv('corr.csv')
+    corr_df.to_csv('saves/corr.csv')
 
 def summary(results):
     print('updating predictions')
@@ -173,20 +171,17 @@ def summary(results):
     main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL' 
 
     main_df.set_index('Code', inplace=True)
-    main_df.to_csv('all_latest.csv')
+    main_df.to_csv('saves/all_latest.csv')
     main_df.drop(['GICS industry group', 'High', 'Low', 'Open', 'Close', 'moving_20', 'moving_100'], axis=1, inplace=True)
-    main_df.to_csv('latest_data.csv')
+    main_df.to_csv('saves/latest_data.csv')
 
 @app.route("/update")
 def thread_latest():
     start = time.time()
     print('updating...')
-    db = request.args['db']
 
-    if (db == '200'):
-        tickers = asx200['Code']
-    if (db == 'asx'):
-        tickers = asxlist['Code']
+    # update list of tickers
+    tickers = asx200['Code']
 
     print('fetching data')
     pool = ThreadPool(8)
@@ -205,7 +200,7 @@ def thread_latest():
 
 @app.route("/latest")
 def get_latest():
-    df = pd.read_csv('latest_data.csv', header=0)
+    df = pd.read_csv('saves/latest_data.csv', header=0)
     return df.to_json(orient='records')
 
 @app.route('/')
