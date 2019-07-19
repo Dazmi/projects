@@ -1,6 +1,6 @@
 # Use the official Python image.
 # https://hub.docker.com/_/python
-FROM python:latest
+FROM python:3.5
 
 # Copy local code to the container image.
 ENV APP_HOME /app
