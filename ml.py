@@ -17,19 +17,13 @@ from tensorflow.keras import layers
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import TensorBoard
 
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout, Flatten,\
- Conv2D, MaxPooling2D
-from keras.layers.normalization import BatchNormalization
-
 def create_tables():
     asxlist = pd.read_csv('20190701-asx200.csv',  header=1)
 
     print(asxlist['Code'])
     main_df = pd.DataFrame()
     for asx in asxlist['Code']:
-        df = web.DataReader(f'data/{asx}.ax', 'yahoo')
+        df = web.DataReader(f'{asx}.ax', 'yahoo')
         df.rename(columns={'Adj Close':asx}, inplace=True)
         main_df = main_df.join(df[asx], how='outer')
         print(asx)
@@ -88,138 +82,47 @@ def extract_featuresets(ticker):
 
     return X,y,df
 
-def build_model(X_train):
+def build_model():
+
+    # model = tf.keras.Sequential([
+    #     tf.keras.layers.LSTM(64, input_shape=(200, ), return_sequences=True),
+    #     tf.keras.layers.LSTM(32),
+    #     tf.keras.layers.Dense(64, activation='relu'),
+    #     tf.keras.layers.Dense(1)
+    # ])
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(32, input_shape=X_train.shape[1:], activation='relu'),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Conv2D(64,(3,3),padding='same',activation='relu'),
+        tf.keras.layers.Dense(200, input_shape=(1,200), activation='relu'),
+        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+        tf.keras.layers.Reshape((100, 200, 200)),
         tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(32, activation='relu'),
-        tf.keras.layers.Dense(8, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
-    
-    base_learning_rate = 0.0001
-    model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=base_learning_rate),
-        loss='binary_crossentropy',
+
+    model.compile(loss='binary_crossentropy',
+              optimizer='adam',
               metrics=['accuracy'])
 
     return model
-
-
-def alaxnet(X_train, y_train):
-    # (3) Create a sequential model
-    model = tf.keras.Sequential()
-
-    # 1st Convolutional Layer
-    model.add(tf.keras.layers.Conv1D(filters=96, input_dim=2, input_shape=X_train.shape, kernel_size=(11),strides=(4), padding='valid'))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Pooling 
-    model.add(tf.keras.layers.MaxPooling1D(pool_size=(2), strides=(2), padding='valid'))
-    # Batch Normalisation before passing it to the next layer
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 2nd Convolutional Layer
-    model.add(tf.keras.layers.Conv1D(filters=256, kernel_size=(11), strides=(1), padding='valid'))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Pooling
-    model.add(tf.keras.layers.MaxPooling1D(pool_size=(2), strides=(2), padding='valid'))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 3rd Convolutional Layer
-    model.add(tf.keras.layers.Conv1D(filters=384, kernel_size=(3), strides=(1), padding='valid'))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 4th Convolutional Layer
-    model.add(tf.keras.layers.Conv1D(filters=384, kernel_size=(3), strides=(1), padding='valid'))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 5th Convolutional Layer
-    model.add(tf.keras.layers.Conv1D(filters=256, kernel_size=(3), strides=(1), padding='valid'))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Pooling
-    model.add(tf.keras.layers.MaxPooling1D(pool_size=(2), strides=(2), padding='valid'))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # Passing it to a dense layer
-    model.add(tf.keras.layers.Flatten())
-    # 1st Dense Layer
-    model.add(tf.keras.layers.Dense(4096, input_shape=(224*224*3,)))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Add Dropout to prevent overfitting
-    model.add(tf.keras.layers.Dropout(0.4))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 2nd Dense Layer
-    model.add(tf.keras.layers.Dense(4096))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Add Dropout
-    model.add(tf.keras.layers.Dropout(0.4))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # 3rd Dense Layer
-    model.add(tf.keras.layers.Dense(1000))
-    model.add(tf.keras.layers.Activation('relu'))
-    # Add Dropout
-    model.add(tf.keras.layers.Dropout(0.4))
-    # Batch Normalisation
-    model.add(tf.keras.layers.BatchNormalization())
-
-    # Output Layer
-    model.add(tf.keras.layers.Dense(1))
-    model.add(tf.keras.layers.Activation('softmax'))
-
-    model.summary()
-
-    # (4) Compile 
-    model.compile(loss='categorical_crossentropy', optimizer='adam',\
-    metrics=['accuracy'])
-
-    return model
-
-def lstm(X_train):
-
-    data_dim = 16
-    timesteps = 8
-    num_classes = 10
-    batch_size = 32
-
-    model = (tf.keras.Sequential())
-    model.add(tf.keras.layers.LSTM(32, return_sequences=True, stateful=True, batch_input_shape=(batch_size, timesteps, data_dim)))
-    model.add(tf.keras.layers.LSTM(32, return_sequences=True, stateful=True))
-    model.add(tf.keras.layers.LSTM(32, stateful=True))
-    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
-
-    model.compile(loss='binary_crossentropy',
-                optimizer='rmsprop',
-                metrics=['accuracy'])
-    
-    return model
-
-
 
 def do_ml(ticker):
     X, y, df = extract_featuresets(ticker)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    model = lstm(X_train)
+    model = build_model()
     
-    history = model.fit(X_train, y_train, batch_size=32, epochs=1)
+    history = model.fit(X_train, y_train, epochs=10)
     
     test_loss, test_acc = model.evaluate(X_test, y_test)
 
     print('Test Loss: {}'.format(test_loss))
     print('Test Accuracy: {}'.format(test_acc))
+
+    #confidence = clf.score(X_test, y_test)
+    
+
+    return confidence
 
 do_ml("TLS")

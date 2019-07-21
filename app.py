@@ -122,19 +122,6 @@ def stats():
     }
     return jsonify(res)
 
-def latest_data(ticker):
-    #df = pd.read_csv(f'data/{ticker}.csv',  header=0)
-    try:
-        df = web.DataReader(f'{ticker}.ax', 'yahoo')
-        df.to_csv(f'data/{ticker}.csv')
-        df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
-        df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
-        df = df.tail(1)
-        df['Code'] = ticker
-        print(ticker)
-        return df
-    except Exception as e: print(e)
-
 def update_corr(tickers):
     corr_df = pd.DataFrame()
     for ticker in tickers:
@@ -146,11 +133,6 @@ def update_corr(tickers):
             corr_df = corr_df.join(corr, how='outer')
             print(ticker)
         except Exception as e: print(e)
-
-    corr_df = corr_df.replace([np.inf, -np.inf], 0)
-    corr_df.fillna(0, inplace=True)
-    corr_df.to_csv('closes_pc.csv')
-    corr_df = corr_df.tail(100)
     corr_df = corr_df.corr()
     corr_df = corr_df.replace([np.inf, -np.inf], 0)
     corr_df.fillna(0, inplace=True)
@@ -174,6 +156,19 @@ def summary(results):
     main_df.drop(['GICS industry group', 'High', 'Low', 'Open', 'Close', 'moving_20', 'moving_100'], axis=1, inplace=True)
     main_df.to_csv('latest_data.csv')
 
+def latest_data(ticker):
+    #df = pd.read_csv(f'data/{ticker}.csv',  header=0)
+    try:
+        df = web.DataReader(f'{ticker}.ax', 'yahoo')
+        df.to_csv(f'data/{ticker}.csv')
+        df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
+        df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
+        df = df.tail(1)
+        df['Code'] = ticker
+        print(ticker)
+        return df
+    except Exception as e: print(e)
+
 @app.route("/update")
 def thread_latest():
     db = request.args['db']
@@ -196,6 +191,8 @@ def thread_latest():
     return jsonify({'message':'Complete', 'time':duration})
 
 
+
+
 @app.route("/latest")
 def get_latest():
     df = pd.read_csv('latest_data.csv', header=0)
@@ -208,3 +205,23 @@ def hello_world():
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
+
+
+
+# def get_data(ticker):
+#     try:
+#         print(ticker)
+#         df = web.DataReader(f'{ticker}.ax', 'yahoo')
+#         df.to_csv(f'data/{ticker}.csv')
+#     except Exception as e: print(e)
+
+
+# @app.route("/update_data")
+# def thread_get():
+#     start = time.time()
+#     pool = ThreadPool(8)
+#     results = pool.map(get_data, asx200['Code'])
+#     pool.close()
+#     pool.join()
+#     print(time.time() - start)
+#     return jsonify({'message':'Complete'})
