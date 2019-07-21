@@ -10,6 +10,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 import time
 from flask_cors import CORS
 import os
+from pandas.compat import StringIO
 
 app = Flask(__name__)
 CORS(app)
@@ -62,10 +63,10 @@ def stats():
     ticker = request.args['ticker']
     ticker = ticker.upper()
     timeframe = request.args['timeframe']
-    # try:
-    #     df = pd.read_csv(f'data/{ticker}.csv',  header=0, index_col=0)
-    # except:
-    df = web.DataReader(f'{ticker}.ax', 'yahoo')
+    try:
+        df = pd.read_csv(f'data/{ticker}.csv',  header=0, index_col=0)
+    except:
+        df = web.DataReader(f'{ticker}.ax', 'yahoo')
     
     df = df.reset_index()
     df = df.round({'Adj Close': 3, 'Volume': 0})
@@ -143,7 +144,7 @@ def update_corr(tickers):
     corr_df = pd.DataFrame()
     for ticker in tickers:
         try:
-            corr = pd.read_csv('data/{}.csv'.format(tickers),  header=0, index_col=0)
+            corr = pd.read_csv(f'data/{ticker}.csv',  header=0, index_col=0)
             corr['pc_change'] = (corr['Adj Close'] - corr['Open']) / abs(corr['Open']) * 100
             corr.rename(columns={'pc_change': ticker}, inplace=True)
             corr.drop(['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'], 1, inplace=True)
