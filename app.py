@@ -3,9 +3,6 @@ import pandas_datareader.data as web
 import pandas as pd
 import numpy as np
 import datetime as dt
-import matplotlib.pyplot as plt
-from matplotlib import style
-from yahoo_fin import stock_info as si
 import json
 import psutil
 from multiprocessing import Pool
@@ -19,12 +16,14 @@ CORS(app)
 asxlist = pd.read_csv('ASXListedCompanies.csv',  header=1)
 asxlist.rename(columns={'ASX code': 'Code'}, inplace=True)
 asx200 = pd.read_csv('20190701-asx200.csv',  header=1)
-corr = pd.read_csv('corr.csv',  header=0, index_col=0)
-latest = pd.read_csv('latest_data.csv',  header=0, index_col=0)
 
 dirName = 'data'
 if not os.path.exists(dirName):
     os.mkdir(dirName)
+
+dirr = 'saves'
+if not os.path.exists(dirr):
+    os.mkdir(dirr)
 
 @app.route("/monitor")
 def monitor():
@@ -97,16 +96,19 @@ def stats():
     asxindex = asxlist.set_index('Code')
     company = asxindex.loc[ticker,:]
 
-    corr = pd.read_csv('corr.csv',  header=0, index_col=0)
+    corr = pd.read_csv('saves/corr.csv',  header=0, index_col=0)
     corr.sort_values(by=[ticker], axis=0, inplace=True, ascending=True)
     corr.drop(ticker, inplace=True)
     pos = corr[ticker].tail(5).index.to_list()
     neg = corr[ticker].head(5).index.to_list()
 
-    pos_company = asxindex.loc[pos,:]
-    neg_company = asxindex.loc[neg,:]
+    latest = pd.read_csv('saves/latest_data.csv',  header=0, index_col=0)
+    pos_company = latest.loc[pos,:]
+    neg_company = latest.loc[neg,:]
 
     pred = latest.loc[ticker,['short_pred', 'long_pred']]
+    pred.fillna("N/A", inplace=True)
+
 
     res = {
         'ticker':ticker,
@@ -117,12 +119,27 @@ def stats():
         'group':company['GICS industry group'],
         'pos':pos_company['Company name'].to_list(),
         'neg':neg_company['Company name'].to_list(),
+        'pc_pos':pos_company['pc_change'].to_list(),
+        'pc_neg':neg_company['pc_change'].to_list(),
         'short_pred':pred['short_pred'],
         'long_pred':pred['long_pred']
     }
     return jsonify(res)
 
+def latest_data(ticker):
+    try:
+        df = web.DataReader(f'{ticker}.ax', 'yahoo')
+        df.to_csv(f'data/{ticker}.csv')
+        df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
+        df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
+        df['std'] = df['Adj Close'].std()
+        df = df.tail(1)
+        df['Code'] = ticker
+        return df
+    except Exception as e: print(e)
+
 def update_corr(tickers):
+    print('updating correlation')
     corr_df = pd.DataFrame()
     for ticker in tickers:
         try:
@@ -131,14 +148,16 @@ def update_corr(tickers):
             corr.rename(columns={'pc_change': ticker}, inplace=True)
             corr.drop(['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'], 1, inplace=True)
             corr_df = corr_df.join(corr, how='outer')
-            print(ticker)
         except Exception as e: print(e)
+
+    corr_df = corr_df.bfill().ffill()
+    #corr_df.to_csv('saves/closes_pc.csv')
+    corr_df = corr_df.tail(60)
     corr_df = corr_df.corr()
-    corr_df = corr_df.replace([np.inf, -np.inf], 0)
-    corr_df.fillna(0, inplace=True)
-    corr_df.to_csv('corr.csv')
+    corr_df.to_csv('saves/corr.csv')
 
 def summary(results):
+    print('updating predictions')
     main_df = pd.DataFrame()
     main_df = main_df.append(results)
     main_df['price_change'] = main_df['Adj Close'] - main_df['Open']
@@ -149,36 +168,22 @@ def summary(results):
     main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'BUY'  
     main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'SELL' 
     main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'BUY'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL'  
+    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL' 
 
     main_df.set_index('Code', inplace=True)
-    main_df.to_csv('all_latest.csv')
+    main_df.to_csv('saves/all_latest.csv')
     main_df.drop(['GICS industry group', 'High', 'Low', 'Open', 'Close', 'moving_20', 'moving_100'], axis=1, inplace=True)
-    main_df.to_csv('latest_data.csv')
-
-def latest_data(ticker):
-    #df = pd.read_csv(f'data/{ticker}.csv',  header=0)
-    try:
-        df = web.DataReader(f'{ticker}.ax', 'yahoo')
-        df.to_csv(f'data/{ticker}.csv')
-        df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
-        df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
-        df = df.tail(1)
-        df['Code'] = ticker
-        print(ticker)
-        return df
-    except Exception as e: print(e)
+    main_df.to_csv('saves/latest_data.csv')
 
 @app.route("/update")
 def thread_latest():
-    db = request.args['db']
-
-    if (db == '200'):
-        tickers = asx200['Code']
-    if (db == 'asx'):
-        tickers = asxlist['Code']
-
     start = time.time()
+    print('updating...')
+
+    # update list of tickers
+    tickers = asx200['Code']
+
+    print('fetching data')
     pool = ThreadPool(8)
     results = pool.map(latest_data, tickers)
     pool.close()
@@ -188,14 +193,14 @@ def thread_latest():
     update_corr(tickers)
 
     duration = time.time() - start
-    return jsonify({'message':'Complete', 'time':duration})
-
-
+    message = {'message':'Complete', 'time':duration }
+    print(message)
+    return jsonify(message)
 
 
 @app.route("/latest")
 def get_latest():
-    df = pd.read_csv('latest_data.csv', header=0)
+    df = pd.read_csv('saves/latest_data.csv', header=0)
     return df.to_json(orient='records')
 
 @app.route('/')
@@ -205,23 +210,3 @@ def hello_world():
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
-
-
-
-# def get_data(ticker):
-#     try:
-#         print(ticker)
-#         df = web.DataReader(f'{ticker}.ax', 'yahoo')
-#         df.to_csv(f'data/{ticker}.csv')
-#     except Exception as e: print(e)
-
-
-# @app.route("/update_data")
-# def thread_get():
-#     start = time.time()
-#     pool = ThreadPool(8)
-#     results = pool.map(get_data, asx200['Code'])
-#     pool.close()
-#     pool.join()
-#     print(time.time() - start)
-#     return jsonify({'message':'Complete'})
