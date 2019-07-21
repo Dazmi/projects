@@ -11,6 +11,10 @@ import time
 from flask_cors import CORS
 import os
 
+import matplotlib.pyplot as plt
+from matplotlib import style
+from yahoo_fin import stock_info as si
+
 app = Flask(__name__)
 CORS(app)
 asxlist = pd.read_csv('ASXListedCompanies.csv',  header=1)
@@ -21,9 +25,9 @@ dirName = 'data'
 if not os.path.exists(dirName):
     os.mkdir(dirName)
 
-dirr = 'saves'
-if not os.path.exists(dirr):
-    os.mkdir(dirr)
+saveDir = 'saves'
+if not os.path.exists(saveDir):
+    os.mkdir(saveDir)
 
 @app.route("/monitor")
 def monitor():
@@ -132,9 +136,10 @@ def latest_data(ticker):
         df.to_csv(f'data/{ticker}.csv')
         df['moving_20'] = df['Adj Close'].rolling(window=20).mean()
         df['moving_100'] = df['Adj Close'].rolling(window=100).mean()
-        df['std'] = df['Adj Close'].std()
+        #df['std'] = df['Adj Close'].std()
         df = df.tail(1)
         df['Code'] = ticker
+        print(ticker)
         return df
     except Exception as e: print(e)
 
@@ -150,7 +155,7 @@ def update_corr(tickers):
             corr_df = corr_df.join(corr, how='outer')
         except Exception as e: print(e)
 
-    corr_df = corr_df.bfill().ffill()
+    #corr_df = corr_df.bfill().ffill()
     #corr_df.to_csv('saves/closes_pc.csv')
     corr_df = corr_df.tail(60)
     corr_df = corr_df.corr()
@@ -165,10 +170,10 @@ def summary(results):
     main_df = pd.merge(asxlist, main_df, on='Code')
     main_df = main_df.round({'Adj Close': 3, 'price_change': 3, 'pc_change': 2})
 
-    main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'BUY'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'SELL' 
-    main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'BUY'  
-    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL' 
+    main_df.loc[main_df['Adj Close'] >= main_df['moving_20'], 'short_pred'] = 'BUY'
+    main_df.loc[main_df['Adj Close'] < main_df['moving_20'], 'short_pred'] = 'SELL'
+    main_df.loc[main_df['Adj Close'] >= main_df['moving_100'], 'long_pred'] = 'BUY'
+    main_df.loc[main_df['Adj Close'] < main_df['moving_100'], 'long_pred'] = 'SELL'
 
     main_df.set_index('Code', inplace=True)
     main_df.to_csv('saves/all_latest.csv')
@@ -183,7 +188,6 @@ def thread_latest():
     # update list of tickers
     tickers = asx200['Code']
 
-    print('fetching data')
     pool = ThreadPool(8)
     results = pool.map(latest_data, tickers)
     pool.close()
@@ -205,8 +209,7 @@ def get_latest():
 
 @app.route('/')
 def hello_world():
-    target = os.environ.get('TARGET', 'World')
-    return 'Hello {}!\n'.format(target)
+    return "hello"
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
+    app.run()
