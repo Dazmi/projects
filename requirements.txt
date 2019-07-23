@@ -2,6 +2,11 @@ flask
 flask_restful
 flask_cors
 psutil
-pandas_datareader
+pandas==0.24.2
+pandas_datareader==0.7.0
+wrapt
+lxml
+requests
+numpy
 matplotlib
 yahoo_fin
