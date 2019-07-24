@@ -4,10 +4,4 @@ flask_cors
 psutil
 pandas==0.24.2
 pandas_datareader==0.7.0
-wrapt
-lxml
-requests
-requests_html
-numpy
 matplotlib
-yahoo_fin

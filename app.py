@@ -10,13 +10,12 @@ from multiprocessing.dummy import Pool as ThreadPool
 import time
 from flask_cors import CORS
 import os
-
-import matplotlib.pyplot as plt
-from matplotlib import style
-from yahoo_fin import stock_info as si
+from main import new
 
 app = Flask(__name__)
 CORS(app)
+
+app.register_blueprint(new, url_prefix='/plan')
 asxlist = pd.read_csv('ASXListedCompanies.csv',  header=1)
 asxlist.rename(columns={'ASX code': 'Code'}, inplace=True)
 asx200 = pd.read_csv('20190701-asx200.csv',  header=1)
