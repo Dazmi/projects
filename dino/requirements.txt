@@ -1,0 +1,7 @@
+tensorflow
+pandas
+pillow
+opencv-python
+pypiwin32
+sklearn
+pyautogui

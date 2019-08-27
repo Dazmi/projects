@@ -1,7 +1,0 @@
-flask
-flask_restful
-flask_cors
-psutil
-pandas==0.24.2
-pandas_datareader==0.7.0
-matplotlib
