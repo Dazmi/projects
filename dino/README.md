@@ -1,7 +1,7 @@
 <h1 align="center">Dino neural network with reinforcement learning</h1>
 <div align="center">
   <a href="https://jaydendao.com/dino">
-    <img src="assets/dino.jpg" alt="Chrome Dino" width="400"/>
+    <img src="assets/dino.JPG" alt="Chrome Dino" />
   </a>
 </div>
 
