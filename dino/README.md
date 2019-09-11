@@ -5,11 +5,11 @@
     <img src="assets/dino.JPG" alt="Chrome Dino" />
   </a>
 </div>
-
+<p>
 Teach a neural network to play through any game watch it improve over continuous game play. This tutorial displays basic example of using pixel and input data which can be found with any computer game. 
 
-The chrome dino is a simple game which is available to everyone who uses the chrome browser. Which is the reason why it has been chosen as a good learning and testing environment. The uses of pixel data and user inputs can be used universally for any game played on a computer. The magic of reinforcement learning occurs with the action, state and reward. 
-
+The chrome dino is a simple game which is available to everyone who uses the chrome browser. Which is the reason why it has been chosen as a good learning and testing environment. The uses of pixel data and user inputs which can be obtained universally from any computer game. The magic of reinforcement learning occurs with the action, state and reward system. 
+</p>
 <div align="center">
   <img src="assets/learning.png" alt="Reinforcement Learning" />
 </div>
@@ -24,9 +24,13 @@ To grab the full 1080p screen, downscale to 360p in grey scale
 screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 screen = cv2.resize(screen, (640,360))
 </code></pre>
+<p>
 By making images in grey scale and downscaled will allow quicker training and processing of data. 
-
+</p>
 <h2>Capture key inputs</h2>
+<p>
+Supivised learning requires inputs which reflect the ideal action at a given frame
+</p>
 <pre><code class='language-python'># key up
 if win32api.GetAsyncKeyState(win32con.VK_UP) != 0:
     action = 1 
@@ -34,11 +38,13 @@ if win32api.GetAsyncKeyState(win32con.VK_UP) != 0:
 if win32api.GetAsyncKeyState(win32con.VK_DOWN) != 0:
     action = 2
 </code></pre>
-
+<p>
 Use <a href="https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes">Virtual-key Codes</a> to assist with identifying key hex values.
-
+</p>
 <h2> Prepare image and input data for machine learning </h2>
+<p>
 Data preparation is a critical step before being thrown into the machine learning model.
+</p>
 <pre><code class='language-python'># make data samples to an array
 X = np.array([i[0] for i in training_data.values]).reshape(-1,HEIGHT,WIDTH, 1)
 # create target labels are a one hot array
@@ -48,7 +54,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, stratif
 </code></pre>
 
 <h2> Neural Network Model </h2>
+<p>
 Using a simple neural network 
+</p>
 <pre><code class='language-python'>def neural_network_model():
     # create layers for model
     model = keras.Sequential([
@@ -66,11 +74,12 @@ Using a simple neural network
     print(model.summary())
     return model
 </code></pre>
+<p>
 Keep the input shape and output layer in mind. Input shape being the dimention of the image with [HEIGHT, WIDTH, COLOUR] as shown. Using one-hot arrays with an activation of softmax number of nodes are determined by the action being UP, DOWN (2) in this example.
-
+</p>
 <h1>Example</h1>
 <h2>Installation</h2>
-Open cmd and install dependencies
+<p>Open cmd and install dependencies</p>
 <pre><code class='language-elm'>pip install -r requirements.txt
 </code></pre>
 
@@ -79,8 +88,9 @@ Open cmd and install dependencies
   <li>Only supports windows 10 and python 3.5+</li>
   <li>Open a chrome browser</li>
   <li>Navigate to <a href="chrome://dino">chrome://dino/</a></li>
-<ul>
+</ul>
 <pre><code class='language-elm'>python rawr.py
 </code></pre>
-Source code from <a href="https://github.com/Dazmi/projects/tree/master/dino">https://github.com/Dazmi/projects/tree/master/dino</a>
+<p>
+  Source code from <a href="https://github.com/Dazmi/projects/tree/master/dino">https://github.com/Dazmi/projects/tree/master/dino</a></p>
 </div>
